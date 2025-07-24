@@ -1,0 +1,48 @@
+<%- contentFor('extra_css') %>
+
+<link href="/libs/jsvectormap/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+     
+<%- contentFor('content') %>
+
+<div class="container-xxl">
+                    
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">                      
+                            <h4 class="card-title">World Map Markers</h4>                      
+                        </div><!--end col-->
+                    </div>  <!--end row-->                                  
+                </div><!--end card-header-->
+                <div class="card-body pt-0">
+                    <div id="map_1" style="width: 100%; height: 350px"></div>             
+                </div><!--end card-body--> 
+            </div><!--end card--> 
+        </div> <!--end col-->                                                       
+    </div><!--end row-->
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">                      
+                            <h4 class="card-title">World Map With Marker Lines</h4>                      
+                        </div><!--end col-->
+                    </div>  <!--end row-->                                  
+                </div><!--end card-header-->
+                <div class="card-body pt-0">
+                    <div id="map_2" style="width: 100%; height: 350px"></div>           
+                </div><!--end card-body--> 
+            </div><!--end card--> 
+        </div> <!--end col-->                                                      
+    </div><!--end row-->                  
+</div><!-- container -->
+
+<%- contentFor('extra_javascript') %>
+               
+<script src="/libs/jsvectormap/jsvectormap.min.js"></script>
+<script src="/libs/jsvectormap/maps/world.js"></script>
+<script src="/js/pages/vectormap.init.js"></script>

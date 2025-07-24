@@ -1,0 +1,36 @@
+<%- contentFor('extra_css') %>
+
+<%- contentFor('content') %>
+
+<div class="container-xxl mt-4">
+  <form  method="POST">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="pageTitle" class="form-label">Page Title</label>
+        <input type="text" class="form-control" id="pageTitle" name="pageTitle" placeholder="e.g. Home Page">
+      </div>
+    </div>
+
+    <h5 class="mt-4">Metadata</h5>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="description" class="form-label">Description</label>
+        <input type="text" class="form-control" id="description" name="metadata[description]" placeholder="e.g. Main home page">
+      </div>
+      <div class="col-md-6">
+        <label for="author" class="form-label">Author</label>
+        <input type="text" class="form-control" id="author" name="metadata[author]" placeholder="e.g. Admin">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="keywords" class="form-label">Keywords (comma-separated)</label>
+      <input type="text" class="form-control" id="keywords" name="metadata[keywords]" placeholder="e.g. home, main, landing">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<%- contentFor('extra_javascript') %>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-startbar="light" data-bs-theme="light">
+
+<head>
+    <%- include('./title-meta') %>
+    
+    <%- extra_css %>
+
+    <%- include ('./head-css') %>
+</head>
+
+<body id="body" <%- body %> >
+    <!-- leftbar-tab-menu -->
+    <%- include ('./topbar') %>
+
+        <!-- Top Bar -->
+        <%- include ('./startbar') %>
+
+            <div class="page-wrapper">
+
+                <div class="page-content">
+
+                    <%- content %>
+
+                    <!--Start Footer-->
+                    <%- include ('./footer') %>
+
+                </div>
+
+            </div>
+
+        <%- include ('./vendorjs') %>
+        <%- extra_javascript %>
+
+      <script src="/js/app.js"></script>
+
+</body>
+
+</html>

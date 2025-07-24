@@ -1,0 +1,19 @@
+<%- contentFor('extra_css') %>
+
+<%- contentFor('content') %>
+<div class="container-xxl">
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-3">
+                <div class="card-body">
+                    <div id='calendar'></div>
+                    <div style='clear:both'></div>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> <!-- end row -->
+</div><!-- container -->
+
+<%- contentFor('extra_javascript') %>
+<script src="/libs/fullcalendar/index.global.min.js"></script>
+<script src="/js/pages/calendar.init.js"></script>
