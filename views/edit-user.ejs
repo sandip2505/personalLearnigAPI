@@ -1,0 +1,535 @@
+<%- contentFor('extra_css') %>
+<style>
+* {
+    box-sizing: border-box;
+}
+
+.edit-user-container {
+    max-width: 789px;
+    margin: 40px auto;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    overflow: hidden;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.form-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 32px;
+    text-align: center;
+    color: white;
+}
+
+.form-header h2 {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.form-header p {
+    margin: 8px 0 0 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.form-content {
+    padding: 36px 32px 32px 32px;
+}
+
+.image-upload-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+    padding: 24px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px dashed #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.image-upload-section:hover {
+    border-color: #667eea;
+    background: #f1f5ff;
+}
+
+.profile-image-container {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.profile-image-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid #ffffff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    object-fit: cover;
+    background: #f8fafc;
+    transition: transform 0.3s ease;
+}
+
+.profile-image-preview:hover {
+    transform: scale(1.05);
+}
+
+.image-upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.profile-image-container:hover .image-upload-overlay {
+    opacity: 1;
+}
+
+.upload-icon {
+    color: white;
+    font-size: 24px;
+}
+
+.upload-label {
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.upload-label:hover {
+    color: #667eea;
+}
+
+.upload-hint {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.file-input {
+    display: none;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.form-row.two-columns {
+    grid-template-columns: 1fr 1fr;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 14px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+.button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.btn {
+    padding: 16px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(102, 126, 234, 0.4);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(239, 68, 68, 0.4);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 32px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal h3 {
+    color: #dc2626;
+    margin-bottom: 16px;
+    font-size: 1.5rem;
+}
+
+.modal p {
+    color: #6b7280;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-small {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .edit-user-container {
+        margin: 20px;
+        border-radius: 12px;
+    }
+    
+    .form-content {
+        padding: 24px 20px;
+    }
+    
+    .form-row.two-columns {
+        grid-template-columns: 1fr;
+    }
+    
+    .button-group {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Success/Error Messages */
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+</style>
+
+<%- contentFor('content') %>
+<div class="edit-user-container">
+    <div class="form-header">
+        <h2>Edit User Profile</h2>
+        <p>Update user information and settings</p>
+    </div>
+    
+    <div class="form-content">
+        <!-- Display success/error messages if any -->
+        <% if (typeof message !== 'undefined' && message) { %>
+            <div class="alert alert-<%= messageType || 'success' %>">
+                <%= message %>
+            </div>
+        <% } %>
+
+        <form action="/edit-user/<%= user._id %>" method="POST" enctype="multipart/form-data" id="editUserForm">
+            <!-- Image Upload Section -->
+            <div class="image-upload-section">
+                <div class="profile-image-container">
+                    <img id="profileImgPreview" 
+                         src="/<%= user.profileImage || 'images/default-avatar.png' %>" 
+                         alt="Profile Image" 
+                         class="profile-image-preview"
+                         onerror="this.src='/images/default-avatar.png'">
+                    <div class="image-upload-overlay" onclick="document.getElementById('profileImage').click()">
+                        <span class="upload-icon">📷</span>
+                    </div>
+                </div>
+                <label for="profileImage" class="upload-label">Change Profile Picture</label>
+                <p class="upload-hint">Click the image or browse to upload a new photo<br>
+                   <small>Supported formats: JPG, PNG, GIF (Max: 5MB)</small></p>
+                <input type="file" 
+                       id="profileImage" 
+                       name="profileImage" 
+                       accept="image/*" 
+                       class="file-input">
+                <input type="hidden" name="existingImage" value="<%= user.profileImage %>">
+            </div>
+
+            <!-- Form Fields -->
+            <div class="form-row two-columns">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" 
+                           id="name" 
+                           name="name" 
+                           value="<%= user.name %>" 
+                           required 
+                           placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input type="text" 
+                           id="username" 
+                           name="username" 
+                           value="<%= user.username %>" 
+                           required 
+                           placeholder="Enter username">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           value="<%= user.email %>" 
+                           required 
+                           placeholder="Enter email address">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="role">User Role *</label>
+                    <select id="role" name="role" required>
+                        <option value="">Select a role</option>
+                        <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                        <option value="teacher" <%= user.role === 'teacher' ? 'selected' : '' %>>Teacher</option>
+                        <option value="student" <%= user.role === 'student' ? 'selected' : '' %>>Student</option>
+                        <option value="editor" <%= user.role === 'editor' ? 'selected' : '' %>>Editor</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Button Group -->
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">
+                    💾 Update User
+                </button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                    🗑️ Delete User
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <h3>⚠️ Confirm Deletion</h3>
+        <p>Are you sure you want to delete <strong><%= user.name %></strong>?<br>
+           This action cannot be undone and will permanently remove all user data.</p>
+        <div class="modal-buttons">
+            <button class="btn btn-danger btn-small" onclick="deleteUser()">
+                Yes, Delete
+            </button>
+            <button class="btn btn-primary btn-small" onclick="closeModal()">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('extra_javascript') %>
+<script>
+// Image preview functionality
+document.getElementById('profileImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Validate file size (5MB limit)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            this.value = '';
+            return;
+        }
+
+        // Validate file type
+        if (!file.type.match('image.*')) {
+            alert('Please select a valid image file');
+            this.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            document.getElementById('profileImgPreview').src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Delete confirmation modal
+function confirmDelete() {
+    document.getElementById('deleteModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+}
+
+function deleteUser() {
+    // Create a form to submit DELETE request
+    const deteleteUser = fetch('/api/deleteUser/<%= user._id %>', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    deteleteUser.then(response => {
+        if (response.ok) {
+            alert('User deleted successfully');
+            window.location.href = '/users'; 
+        } else {
+            alert('Failed to delete user. Please try again.');
+        }
+    });
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+// Form validation
+document.getElementById('editUserForm').addEventListener('submit', function(e) {
+    const name = document.getElementById('name').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const role = document.getElementById('role').value;
+
+    if (!name || !username || !email || !role) {
+        e.preventDefault();
+        alert('Please fill in all required fields');
+        return false;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        e.preventDefault();
+        alert('Please enter a valid email address');
+        return false;
+    }
+
+    // Username validation (alphanumeric and underscores only)
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!usernameRegex.test(username)) {
+        e.preventDefault();
+        alert('Username can only contain letters, numbers, and underscores');
+        return false;
+    }
+});
+
+// Auto-resize textarea if you add any in the future
+function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+}
+</script>

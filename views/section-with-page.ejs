@@ -1,0 +1,484 @@
+<%- contentFor('extra_css') %>
+<style>
+  .field-config-item {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f8f9fa;
+    position: relative;
+  }
+  .field-config-item .remove-field {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+  .add-field-btn {
+    border: 2px dashed #007bff;
+    background: transparent;
+    color: #007bff;
+    padding: 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  .add-field-btn:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  .main-form-section {
+    background-color: #e3f2fd;
+    border: 2px solid #2196f3;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  .field-configuration-section {
+    background-color: #fff3e0;
+    border: 2px solid #ff9800;
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .section-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+</style>
+
+<%- contentFor('content') %>
+
+<div class="container-xxl mt-4">
+  <div class="row">
+    <div class="col-12">
+      
+      <!-- Field Configuration Section -->
+      <div class="card field-configuration-section mb-4">
+        <div class="section-header">
+          <h4 class="mb-0"><i class="fas fa-cogs"></i> Step 1: Configure Fields</h4>
+          <button type="button" class="btn btn-outline-primary btn-sm" id="addFieldBtn">
+            <i class="fas fa-plus"></i> Add Field
+          </button>
+        </div>
+        
+        <div id="fieldsConfigContainer">
+          <!-- Field configuration items will be added here -->
+        </div>
+
+        <!-- Add Field Button (when no fields exist) -->
+        <div id="emptyFieldsMessage" class="text-center py-4">
+          <button type="button" class="btn add-field-btn w-100" id="addFirstField">
+            <i class="fas fa-plus-circle fa-2x mb-2"></i><br>
+            Configure Your First Field
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Section Form -->
+      <div class="card main-form-section">
+        <div class="section-header">
+          <h4 class="mb-0"><i class="fas fa-edit"></i> Step 2: Create/Update Section</h4>
+        </div>
+        
+        <form id="mainSectionForm" method="POST">
+          
+          <!-- Section Basic Info -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <label for="pageName" class="form-label">Page Name</label>
+              <select class="form-select" id="pageName" name="pageName" required>
+                <option value="">Select Page</option>
+                <% pages.forEach(page => { %>
+                  <option value="<%= page.pageName %>"><%= page.pageTitle %></option>
+                <% }); %>
+              </select>
+              <small class="text-muted">The page where this section will be added</small>
+            </div>
+            <div class="col-md-6">
+              <label for="sectionName" class="form-label">Section Name</label>
+              <input type="text" class="form-control" id="sectionName" name="sectionName" required placeholder="e.g. hero, features, testimonials">
+              <small class="text-muted">Unique identifier for this section</small>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-8">
+              <label for="sectionTitle" class="form-label">Section Title</label>
+              <input type="text" class="form-control" id="sectionTitle" name="sectionTitle" required placeholder="e.g. Hero Section, About Us">
+            </div>
+         
+          </div>
+
+          <hr class="my-4">
+
+          <!-- Dynamic Fields Values Section -->
+          <div id="dynamicFieldsSection">
+            <h5 class="mb-3">Field Values</h5>
+            <div id="fieldsValuesContainer">
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Configure fields above to see input fields here
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <!-- Submit Button -->
+          <div class="row">
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-save"></i> Create/Update Section
+              </button>
+              <button type="button" class="btn btn-secondary btn-lg ms-2" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i> Cancel
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- contentFor('extra_javascript') %>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  let fieldCounter = 0;
+  let configuredFields = [];
+  
+  const fieldsConfigContainer = document.getElementById('fieldsConfigContainer');
+  const fieldsValuesContainer = document.getElementById('fieldsValuesContainer');
+  const emptyMessage = document.getElementById('emptyFieldsMessage');
+  const addFieldBtn = document.getElementById('addFieldBtn');
+  const addFirstFieldBtn = document.getElementById('addFirstField');
+
+  // Field types available
+  const fieldTypes = [
+    { value: 'text', label: 'Text' },
+    { value: 'textarea', label: 'Textarea' },
+    { value: 'email', label: 'Email' },
+    { value: 'number', label: 'Number' },
+    { value: 'tel', label: 'Phone' },
+    { value: 'url', label: 'URL' },
+    { value: 'date', label: 'Date' },
+    { value: 'time', label: 'Time' },
+    { value: 'select', label: 'Select Dropdown' },
+    { value: 'radio', label: 'Radio Button' },
+    { value: 'checkbox', label: 'Checkbox' },
+    { value: 'file', label: 'File Upload' },
+    { value: 'hidden', label: 'Hidden Field' }
+  ];
+
+  function createFieldConfigHTML(index) {
+    const fieldTypesOptions = fieldTypes.map(type => 
+      `<option value="${type.value}">${type.label}</option>`
+    ).join('');
+
+    return `
+      <div class="field-config-item" data-field-index="${index}">
+        <button type="button" class="btn btn-sm btn-outline-danger remove-field" onclick="removeFieldConfig(${index})">
+          <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <label class="form-label">Field Name</label>
+            <input type="text" class="form-control field-name" data-index="${index}" placeholder="e.g. firstName, email" required>
+            <small class="text-muted">No spaces, use camelCase</small>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Field Type</label>
+            <select class="form-control field-type" data-index="${index}" required>
+              <option value="">Select Type</option>
+              ${fieldTypesOptions}
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Display Label</label>
+            <input type="text" class="form-control field-label" data-index="${index}" placeholder="e.g. First Name, Email Address">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Default Value</label>
+            <input type="text" class="form-control field-default" data-index="${index}" placeholder="Optional default value">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-check">
+              <input class="form-check-input field-required" type="checkbox" data-index="${index}" id="required_${index}">
+              <label class="form-check-label" for="required_${index}">
+                Required Field
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <button type="button" class="btn btn-success btn-sm" onclick="addFieldToMainForm(${index})">
+              <i class="fas fa-plus"></i> Add to Main Form
+            </button>
+          </div>
+        </div>
+
+        <div class="additional-options-${index}" style="display: none;">
+          <!-- Additional options for select, radio, checkbox will be added here -->
+        </div>
+      </div>
+    `;
+  }
+
+  function addFieldConfig() {
+    const fieldHTML = createFieldConfigHTML(fieldCounter);
+    fieldsConfigContainer.insertAdjacentHTML('beforeend', fieldHTML);
+    
+    // Add event listeners for this field
+    const fieldElement = fieldsConfigContainer.querySelector(`[data-field-index="${fieldCounter}"]`);
+    const typeSelect = fieldElement.querySelector('.field-type');
+    typeSelect.addEventListener('change', function() {
+      handleFieldTypeChange(fieldCounter, this.value);
+    });
+    
+    fieldCounter++;
+    updateFieldsVisibility();
+  }
+
+  function updateFieldsVisibility() {
+    const hasFields = fieldsConfigContainer.children.length > 0;
+    emptyMessage.style.display = hasFields ? 'none' : 'block';
+  }
+
+  // Global function to remove field configuration
+  window.removeFieldConfig = function(index) {
+    const fieldElement = document.querySelector(`[data-field-index="${index}"]`);
+    if (fieldElement) {
+      fieldElement.remove();
+      // Also remove from main form if it exists
+      removeFieldFromMainForm(index);
+      updateFieldsVisibility();
+    }
+  }
+
+  // Global function to handle field type changes
+  function handleFieldTypeChange(index, fieldType) {
+    const additionalOptions = document.querySelector(`.additional-options-${index}`);
+    
+    if (fieldType === 'select' || fieldType === 'radio' || fieldType === 'checkbox') {
+      additionalOptions.style.display = 'block';
+      additionalOptions.innerHTML = `
+        <div class="row">
+          <div class="col-12">
+            <label class="form-label">Options (one per line)</label>
+            <textarea class="form-control field-options" data-index="${index}" rows="3" placeholder="Option 1&#10;Option 2&#10;Option 3"></textarea>
+            <small class="text-muted">Enter each option on a new line</small>
+          </div>
+        </div>
+      `;
+    } else {
+      additionalOptions.style.display = 'none';
+    }
+  }
+
+  // Global function to add field to main form
+  window.addFieldToMainForm = function(index) {
+    const configElement = document.querySelector(`[data-field-index="${index}"]`);
+    const fieldName = configElement.querySelector('.field-name').value;
+    const fieldType = configElement.querySelector('.field-type').value;
+    const fieldLabel = configElement.querySelector('.field-label').value;
+    const fieldDefault = configElement.querySelector('.field-default').value;
+    const fieldRequired = configElement.querySelector('.field-required').checked;
+    const fieldOptions = configElement.querySelector('.field-options')?.value;
+
+    if (!fieldName || !fieldType) {
+      alert('Please fill in Field Name and Field Type before adding to main form');
+      return;
+    }
+
+    // Check if field already exists in main form
+    if (document.querySelector(`[data-main-field="${fieldName}"]`)) {
+      alert('Field already exists in main form');
+      return;
+    }
+
+    const fieldConfig = {
+      index,
+      fieldName,
+      fieldType,
+      fieldLabel: fieldLabel || fieldName,
+      fieldDefault,
+      fieldRequired,
+      options: fieldOptions ? fieldOptions.split('\n').filter(opt => opt.trim()) : []
+    };
+
+    addFieldToMainFormDOM(fieldConfig);
+    configuredFields.push(fieldConfig);
+    updateMainFormInfo();
+  }
+
+  function addFieldToMainFormDOM(fieldConfig) {
+    let fieldHTML = '';
+    const { fieldName, fieldType, fieldLabel, fieldDefault, fieldRequired, options } = fieldConfig;
+    const requiredAttr = fieldRequired ? 'required' : '';
+    const requiredText = fieldRequired ? ' *' : '';
+
+    switch (fieldType) {
+      case 'textarea':
+        fieldHTML = `
+          <div class="col-md-6 mb-3" data-main-field="${fieldName}">
+            <label class="form-label">${fieldLabel}${requiredText}</label>
+            <textarea class="form-control" name="fieldValues[${fieldName}]" placeholder="${fieldLabel}" ${requiredAttr}>${fieldDefault}</textarea>
+            <button type="button" class="btn btn-sm btn-outline-danger mt-1" onclick="removeFieldFromMainForm('${fieldName}')">Remove</button>
+          </div>
+        `;
+        break;
+      case 'select':
+        const selectOptions = options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+        fieldHTML = `
+          <div class="col-md-6 mb-3" data-main-field="${fieldName}">
+            <label class="form-label">${fieldLabel}${requiredText}</label>
+            <select class="form-control" name="fieldValues[${fieldName}]" ${requiredAttr}>
+              <option value="">Choose ${fieldLabel}</option>
+              ${selectOptions}
+            </select>
+            <button type="button" class="btn btn-sm btn-outline-danger mt-1" onclick="removeFieldFromMainForm('${fieldName}')">Remove</button>
+          </div>
+        `;
+        break;
+      case 'radio':
+        const radioOptions = options.map((opt, i) => `
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="fieldValues[${fieldName}]" value="${opt}" id="${fieldName}_${i}">
+            <label class="form-check-label" for="${fieldName}_${i}">${opt}</label>
+          </div>
+        `).join('');
+        fieldHTML = `
+          <div class="col-md-6 mb-3" data-main-field="${fieldName}">
+            <label class="form-label">${fieldLabel}${requiredText}</label>
+            <div>${radioOptions}</div>
+            <button type="button" class="btn btn-sm btn-outline-danger mt-1" onclick="removeFieldFromMainForm('${fieldName}')">Remove</button>
+          </div>
+        `;
+        break;
+      case 'checkbox':
+        fieldHTML = `
+          <div class="col-md-6 mb-3" data-main-field="${fieldName}">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="fieldValues[${fieldName}]" value="true" id="check_${fieldName}">
+              <label class="form-check-label" for="check_${fieldName}">${fieldLabel}${requiredText}</label>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger mt-1" onclick="removeFieldFromMainForm('${fieldName}')">Remove</button>
+          </div>
+        `;
+        break;
+      case 'file':
+        fieldHTML = `
+          <div class="col-md-6 mb-3" data-main-field="${fieldName}">
+            <label class="form-label">${fieldLabel}${requiredText}</label>
+            <input type="file" class="form-control" name="fieldValues[${fieldName}]" ${requiredAttr}>
+            <button type="button" class="btn btn-sm btn-outline-danger mt-1" onclick="removeFieldFromMainForm('${fieldName}')">Remove</button>
+          </div>
+        `;
+        break;
+      default:
+        fieldHTML = `
+          <div class="col-md-6 mb-3" data-main-field="${fieldName}">
+            <label class="form-label">${fieldLabel}${requiredText}</label>
+            <input type="${fieldType}" class="form-control" name="fieldValues[${fieldName}]" placeholder="${fieldLabel}" value="${fieldDefault}" ${requiredAttr}>
+            <button type="button" class="btn btn-sm btn-outline-danger mt-1" onclick="removeFieldFromMainForm('${fieldName}')">Remove</button>
+          </div>
+        `;
+    }
+
+    // Create a row if none exists or add to existing row
+    let rowContainer = fieldsValuesContainer.querySelector('.row');
+    if (!rowContainer) {
+      fieldsValuesContainer.innerHTML = '<div class="row"></div>';
+      rowContainer = fieldsValuesContainer.querySelector('.row');
+    }
+    
+    rowContainer.insertAdjacentHTML('beforeend', fieldHTML);
+  }
+
+  // Global function to remove field from main form
+  window.removeFieldFromMainForm = function(fieldName) {
+    const fieldElement = document.querySelector(`[data-main-field="${fieldName}"]`);
+    if (fieldElement) {
+      fieldElement.remove();
+      // Remove from configured fields array
+      configuredFields = configuredFields.filter(field => field.fieldName !== fieldName);
+      updateMainFormInfo();
+    }
+  }
+
+  function updateMainFormInfo() {
+    if (configuredFields.length === 0) {
+      fieldsValuesContainer.innerHTML = `
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i> Configure fields above to see input fields here
+        </div>
+      `;
+    }
+  }
+
+  // Event listeners
+  addFieldBtn.addEventListener('click', addFieldConfig);
+  addFirstFieldBtn.addEventListener('click', addFieldConfig);
+
+  // Form submission handler
+  document.getElementById('mainSectionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const pageName = formData.get('pageName');
+    const sectionName = formData.get('sectionName');
+    
+    // Convert form data to the expected format
+    const submitData = {
+      sectionTitle: formData.get('sectionTitle'),
+      order: parseInt(formData.get('order')) || 0,
+      fields: []
+    };
+
+    // Process configured fields with their values
+    configuredFields.forEach(fieldConfig => {
+      const fieldValue = formData.get(`fieldValues[${fieldConfig.fieldName}]`) || fieldConfig.fieldDefault || '';
+      
+      const field = {
+        fieldName: fieldConfig.fieldName,
+        fieldType: fieldConfig.fieldType,
+        fieldValue: fieldValue,
+        isRequired: fieldConfig.fieldRequired
+      };
+
+      submitData.fields.push(field);
+    });
+console.log(submitData,"submitData");
+
+    // Submit to API
+    fetch(`/api/${pageName}/${sectionName}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(submitData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Section created/updated successfully!');
+        // Optionally redirect or reset form
+        // window.location.href = '/admin/sections';
+      } else {
+        alert('Error: ' + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while saving the section.');
+    });
+  });
+
+  // Initialize
+  updateFieldsVisibility();
+  updateMainFormInfo();
+});
+</script>

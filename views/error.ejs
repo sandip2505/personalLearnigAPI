@@ -1,0 +1,41 @@
+<%- contentFor('extra_css') %>
+<style>
+    .forbidden-wrapper {
+        min-height: 70vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    .forbidden-wrapper h1 {
+        font-size: 5rem;
+        color: #dc3545; /* Bootstrap danger red */
+        margin-bottom: 1rem;
+    }
+    .forbidden-wrapper p {
+        font-size: 1.25rem;
+        color: #6c757d;
+    }
+    .forbidden-wrapper a {
+        margin-top: 1rem;
+    }
+</style>
+
+<%- contentFor('content') %>
+<div class="container-xxl">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="forbidden-wrapper">
+                <h1>403</h1>
+                <h3>Forbidden</h3>
+                <p>You don’t have permission to access this page.</p>
+                <a href="/" class="btn btn-primary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('extra_javascript') %>
+<script src="/libs/clipboard/clipboard.min.js"></script>
+<script src="/js/pages/clipboard.init.js"></script>

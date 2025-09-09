@@ -15,7 +15,7 @@
                                     <h4 class="card-title">Page Details</h4>
                                 </div>
                             </div>
-                            <a href="/add-page" class="btn btn-primary">Add Page</a>
+                            <a href="/pages/add" class="btn btn-primary">Add Page</a>
                         </div>
                         <div class="card-body pt-0">
                             <div class="table-responsive">
@@ -30,30 +30,35 @@
                                             </th>
                                             <th>Name</th>
                                             <th>Title</th>
+                                            <th>Keywords</th>
                                             <th>Description</th>
                                             <th>Author</th>
+                                            <th>Section</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <% for (let i=0; i < pages.length; i++) { %>
                                             <tr>
-                                                <td style="width: 16px;">
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" name="check"
-                                                            id="customCheck<%= i %>">
-                                                    </div>
+                                                <td >
+                                                    <%= i +1 %>
                                                 </td>
                                                 <td>
-                                                    <%= pages[i].pageName %>
+                                                    <%= pages[i].name %>
                                                 </td>
                                                 <td>
-                                                    <%= pages[i].pageTitle %>
+                                                    <%= pages[i].metadata?.title %>
                                                 </td>
                                                 <td>
-                                                    <%= pages[i].metadata.description %>
+                                                    <%= pages[i].metadata?.keywords.join(', ') %>
+                                                </td>
+                                                 <td>
+                                                    <%= pages[i].metadata?.description %>
+                                                </td>
+                                                 <td>
+                                                    <%= pages[i].metadata?.author %>
                                                 </td>
                                                 <td>
-                                                    <%= pages[i].metadata.author %>
+                                                    <a href="/add-page-section/<%= pages[i]._id %>">View Section</a>
                                                 </td>
                                             </tr>
                                             <% } %>

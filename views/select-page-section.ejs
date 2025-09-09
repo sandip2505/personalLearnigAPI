@@ -1,0 +1,455 @@
+<%- contentFor('extra_css') %>
+
+    <%- contentFor('content') %>
+
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .header {
+      background: #333;
+      color: white;
+      padding: 20px;
+      border-radius: 8px 8px 0 0;
+    }
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+    .header p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 20px;
+      min-height: 500px;
+    }
+    .panel {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+    }
+    .panel h2 {
+      margin-bottom: 15px;
+      color: #333;
+      font-size: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .drop-panel {
+      min-height: 400px;
+      position: relative;
+    }
+    .drop-panel.drag-over {
+      border-color: #007bff;
+      background: #f0f8ff;
+    }
+    .item {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 12px 15px;
+      margin: 8px 0;
+      border-radius: 4px;
+      cursor: grab;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .item:hover {
+      border-color: #007bff;
+    }
+    .item:active {
+      cursor: grabbing;
+    }
+    .item.dragging {
+      opacity: 0.5;
+    }
+    .dropped-item {
+      background: #e8f4fd;
+      border-color: #007bff;
+    }
+    .remove-btn {
+      background: #dc3545;
+      border: none;
+      color: white;
+      border-radius: 3px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .remove-btn:hover {
+      background: #c82333;
+    }
+    .controls {
+      padding: 20px;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: #007bff;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #0056b3;
+    }
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #545b62;
+    }
+    .output {
+      margin: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .empty-state {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      margin-top: 50px;
+    }
+    .item-counter {
+      background: #007bff;
+      color: white;
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 12px;
+      margin-left: 10px;
+    }
+    .sortable-placeholder {
+      background: #e9ecef;
+      border: 2px dashed #007bff;
+      margin: 8px 0;
+      height: 45px;
+      border-radius: 4px;
+    }
+    @media (max-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+
+  <div class="container">
+    <div class="header">
+      <h1>Drag & Drop Manager</h1>
+      <p>Drag items from left to right panel, and reorder selected items by dragging</p>
+    </div>
+    <div class="main-content">
+      <div class="panel source-panel">
+        <h2>Available Items</h2>
+        <div id="sourceItems">
+          <div class="item" draggable="true" data-item='{"id": 1, "name": "Product A", "category": "Electronics", "price": 299}'>
+            <span>Product A - Electronics ($299)</span>
+          </div>
+          <div class="item" draggable="true" data-item='{"id": 2, "name": "Product B", "category": "Clothing", "price": 49}'>
+            <span>Product B - Clothing ($49)</span>
+          </div>
+          <div class="item" draggable="true" data-item='{"id": 3, "name": "Product C", "category": "Books", "price": 25}'>
+            <span>Product C - Books ($25)</span>
+          </div>
+          <div class="item" draggable="true" data-item='{"id": 4, "name": "Product D", "category": "Home", "price": 125}'>
+            <span>Product D - Home ($125)</span>
+          </div>
+          <div class="item" draggable="true" data-item='{"id": 5, "name": "Product E", "category": "Sports", "price": 89}'>
+            <span>Product E - Sports ($89)</span>
+          </div>
+          <div class="item" draggable="true" data-item='{"id": 6, "name": "Product F", "category": "Health", "price": 75}'>
+            <span>Product F - Health ($75)</span>
+          </div>
+        </div>
+      </div>
+      <div class="panel drop-panel" id="dropZone">
+        <h2>Selected Items <span id="itemCount" class="item-counter">0</span></h2>
+        <div id="droppedItems">
+          <div class="empty-state">
+            Drop items here to add them to your selection<br/>
+            <small>Drag selected items to reorder them</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn btn-primary" id="submitBtn">Submit Selection</button>
+      <button class="btn btn-secondary" id="clearBtn">Clear All</button>
+    </div>
+    <div id="output" class="output" style="display: none;"></div>
+  </div>
+
+<script>
+    class DragDropManager {
+        constructor() {
+            this.droppedData = [];
+            this.draggedElement = null;
+            this.draggedFromSource = false;
+            this.draggedDropId = null;
+            this.init();
+        }
+
+        init() {
+            this.setupDragAndDrop();
+            this.setupButtons();
+            this.updateCounter();
+        }
+
+        setupDragAndDrop() {
+            const sourceItems = document.querySelectorAll('#sourceItems .item');
+            sourceItems.forEach(item => {
+                item.addEventListener('dragstart', this.handleSourceDragStart.bind(this));
+                item.addEventListener('dragend', this.handleDragEnd.bind(this));
+            });
+
+            const dropZone = document.getElementById('dropZone');
+            dropZone.addEventListener('dragover', this.handleDragOver.bind(this));
+            dropZone.addEventListener('dragenter', this.handleDragEnter.bind(this));
+            dropZone.addEventListener('dragleave', this.handleDragLeave.bind(this));
+            dropZone.addEventListener('drop', this.handleDrop.bind(this));
+        }
+
+        setupButtons() {
+            document.getElementById('submitBtn').addEventListener('click', this.handleSubmit.bind(this));
+            document.getElementById('clearBtn').addEventListener('click', this.handleClear.bind(this));
+        }
+
+        handleSourceDragStart(e) {
+            const itemData = e.target.getAttribute('data-item');
+            e.dataTransfer.setData('text/plain', itemData);
+            e.dataTransfer.effectAllowed = 'copy';
+            e.target.classList.add('dragging');
+            this.draggedFromSource = true;
+        }
+
+        handleDroppedItemDragStart(e, dropId) {
+            this.draggedDropId = dropId;
+            e.dataTransfer.effectAllowed = 'move';
+            e.target.classList.add('dragging');
+            this.draggedElement = e.target;
+            this.draggedFromSource = false;
+        }
+
+        handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            this.draggedElement = null;
+            this.draggedDropId = null;
+            const placeholder = document.querySelector('.sortable-placeholder');
+            if (placeholder) placeholder.remove();
+        }
+
+        handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = this.draggedFromSource ? 'copy' : 'move';
+
+            if (!this.draggedFromSource && this.draggedElement) {
+                this.handleSortableMove(e);
+            }
+        }
+
+        handleSortableMove(e) {
+            const droppedItems = document.getElementById('droppedItems');
+            const afterElement = this.getDragAfterElement(droppedItems, e.clientY);
+            let placeholder = document.querySelector('.sortable-placeholder');
+
+            if (!placeholder) {
+                placeholder = document.createElement('div');
+                placeholder.className = 'sortable-placeholder';
+                placeholder.style.height = '45px';
+            }
+
+            if (afterElement == null) {
+                droppedItems.appendChild(placeholder);
+            } else {
+                droppedItems.insertBefore(placeholder, afterElement);
+            }
+        }
+
+        getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.dropped-item:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        handleDragEnter(e) {
+            e.preventDefault();
+            document.getElementById('dropZone').classList.add('drag-over');
+        }
+
+        handleDragLeave(e) {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                document.getElementById('dropZone').classList.remove('drag-over');
+            }
+        }
+
+        handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('dropZone').classList.remove('drag-over');
+
+            const placeholder = document.querySelector('.sortable-placeholder');
+
+            if (this.draggedFromSource) {
+                const data = e.dataTransfer.getData('text/plain');
+                const itemData = JSON.parse(data);
+                this.addDroppedItem(itemData);
+            } else if (this.draggedDropId !== null && placeholder) {
+                const draggedIndex = this.droppedData.findIndex(item => item.dropId === this.draggedDropId);
+                if (draggedIndex === -1) return;
+
+                const draggedItem = this.droppedData[draggedIndex];
+                this.droppedData.splice(draggedIndex, 1);
+
+                const allItems = [...document.getElementById('droppedItems').children];
+                const placeholderIndex = allItems.indexOf(placeholder);
+
+                let insertIndex = placeholderIndex;
+                if (insertIndex > draggedIndex) insertIndex--;
+
+                this.droppedData.splice(insertIndex, 0, draggedItem);
+                this.updateDroppedItemDisplay();
+            }
+
+            if (placeholder) placeholder.remove();
+        }
+
+        addDroppedItem(data) {
+            const newItem = { ...data, dropId: Date.now() + Math.random() };
+            this.droppedData.push(newItem);
+            this.updateDroppedItemDisplay();
+        }
+
+        updateDroppedItemDisplay() {
+            const container = document.getElementById('droppedItems');
+
+            if (this.droppedData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        Drop items here to add them to your selection<br>
+                        <small>Drag selected items to reorder them</small>
+                    </div>
+                `;
+                this.updateCounter();
+                return;
+            }
+
+            container.innerHTML = this.droppedData.map(item => `
+                <div class="item dropped-item" draggable="true" data-drop-id="${item.dropId}">
+                    <span>${item.name} - ${item.category} ($${item.price})</span>
+                    <button class="remove-btn" onclick="dragDropManager.removeItem(${item.dropId})">×</button>
+                </div>
+            `).join('');
+
+            const droppedItems = container.querySelectorAll('.dropped-item');
+            droppedItems.forEach(item => {
+                const dropId = parseFloat(item.getAttribute('data-drop-id'));
+                item.addEventListener('dragstart', (e) => this.handleDroppedItemDragStart(e, dropId));
+                item.addEventListener('dragend', this.handleDragEnd.bind(this));
+            });
+
+            this.updateCounter();
+        }
+
+        removeItem(dropId) {
+            this.droppedData = this.droppedData.filter(item => item.dropId !== dropId);
+            this.updateDroppedItemDisplay();
+        }
+
+        updateCounter() {
+            document.getElementById('itemCount').textContent = this.droppedData.length;
+        }
+
+        handleSubmit() {
+            const output = document.getElementById('output');
+            if (this.droppedData.length === 0) {
+                output.style.display = 'block';
+                output.textContent = 'No items selected. Please drag some items to the drop zone first.';
+                return;
+            }
+
+            const resultArray = this.droppedData.map((item, index) => ({
+                position: index + 1,
+                id: item.id,
+                name: item.name,
+                category: item.category,
+                price: item.price
+            }));
+
+            output.style.display = 'block';
+            output.textContent = `Selected Items Array (in order):\n\n${JSON.stringify(resultArray, null, 2)}`;
+            console.log('Submitted data:', resultArray);
+        }
+
+        handleClear() {
+            this.droppedData = [];
+            this.updateDroppedItemDisplay();
+            document.getElementById('output').style.display = 'none';
+        }
+
+        getData() {
+            return this.droppedData.map((item, index) => ({
+                position: index + 1,
+                id: item.id,
+                name: item.name,
+                category: item.category,
+                price: item.price
+            }));
+        }
+    }
+
+    const dragDropManager = new DragDropManager();
+    window.dragDropManager = dragDropManager;
+</script>
+
+
+
+     <%- contentFor('extra_javascript') %>

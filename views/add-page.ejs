@@ -6,17 +6,29 @@
   <form  method="POST">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label for="pageTitle" class="form-label">Page Title</label>
-        <input type="text" class="form-control" id="pageTitle" name="pageTitle" placeholder="e.g. Home Page">
+        <label for="name" class="form-label">Page Title</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="e.g. Home Page" oninput="generateSlug()">
+      </div>
+      <div class="col-md-6">
+        <label for="slug" class="form-label">Slug</label>
+        <input type="text" class="form-control" id="slug" name="slug" placeholder="e.g. home-page">
       </div>
     </div>
 
     <h5 class="mt-4">Metadata</h5>
 
     <div class="row mb-3">
+        <div class="col-md-6">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="metadata[title]" placeholder="e.g. Main home page">
+      </div>
       <div class="col-md-6">
         <label for="description" class="form-label">Description</label>
         <input type="text" class="form-control" id="description" name="metadata[description]" placeholder="e.g. Main home page">
+      </div>
+      <div class="col-md-6">
+        <label for="keywords" class="form-label">Keywords</label>
+        <input type="text" class="form-control" id="keywords" name="metadata[keywords]" placeholder="e.g. home, main, landing">
       </div>
       <div class="col-md-6">
         <label for="author" class="form-label">Author</label>
@@ -24,13 +36,19 @@
       </div>
     </div>
 
-    <div class="mb-3">
-      <label for="keywords" class="form-label">Keywords (comma-separated)</label>
-      <input type="text" class="form-control" id="keywords" name="metadata[keywords]" placeholder="e.g. home, main, landing">
-    </div>
-
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
 
+<script>
+        function generateSlug() {
+          const title = document.getElementById('name').value;
+          const slug = title
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-');
+          document.getElementById('slug').value = slug;
+        }
+      </script>
 <%- contentFor('extra_javascript') %>

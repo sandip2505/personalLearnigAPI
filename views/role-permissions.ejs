@@ -1,0 +1,369 @@
+<%- contentFor('extra_css') %>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    .permission-card {
+        transition: all 0.3s ease;
+        border: 2px solid #e9ecef;
+        cursor: pointer;
+    }
+    
+    .permission-card:hover {
+        border-color: #007bff;
+        box-shadow: 0 4px 8px rgba(0,123,255,0.1);
+    }
+    
+    .permission-card.selected {
+        border-color: #28a745;
+        background-color: #f8fff9;
+        box-shadow: 0 4px 12px rgba(40,167,69,0.2);
+    }
+    
+    .permission-card.selected .card-header {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .permission-checkbox {
+        transform: scale(1.2);
+    }
+    
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+    }
+    
+    .btn-save {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        border: none;
+        padding: 12px 30px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40,167,69,0.3);
+    }
+    
+    .select-all-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid #007bff;
+    }
+    
+    .permission-group {
+        margin-bottom: 2rem;
+    }
+    
+    .group-title {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+    
+    .stats-card {
+        background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+</style>
+
+<%- contentFor('content') %>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header text-center">
+        <div class="container">
+            <h1 class="mb-0">
+                <i class="fas fa-shield-alt me-3"></i>Role Permissions Management
+            </h1>
+            <p class="mt-2 mb-0">Assign and manage permissions for Role ID: <strong><%= roleId %></strong></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Statistics Card -->
+        <div class="row">
+            <div class="col-12">
+                <div class="stats-card text-center">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h3 id="totalPermissions"><%= permissions.length %></h3>
+                            <p class="mb-0">Total Permissions</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 id="selectedCount">0</h3>
+                            <p class="mb-0">Selected</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 id="remainingCount"><%= permissions.length %></h3>
+                            <p class="mb-0">Remaining</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Permission Assignment Form -->
+        <form id="rolePermissionForm" action="/role-permission/<%= roleId %>" method="POST">
+            <!-- Select All Section -->
+            <div class="select-all-section">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input permission-checkbox" type="checkbox" id="selectAll">
+                            <label class="form-check-label fw-bold" for="selectAll">
+                                <i class="fas fa-check-double me-2"></i>Select All Permissions
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button type="button" class="btn btn-outline-primary me-2" id="clearAll">
+                            <i class="fas fa-times me-1"></i>Clear All
+                        </button>
+                        <button type="button" class="btn btn-outline-success" id="checkRequired">
+                            <i class="fas fa-star me-1"></i>Select Core Permissions
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Permissions Grid -->
+            <div class="row" id="permissionsContainer">
+                <% if (permissions && permissions.length > 0) { %>
+                    <% permissions.forEach((permission, index) => { %>
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="card permission-card h-100" data-permission-id="<%= permission._id %>">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div class="form-check mb-0">
+                                        <input 
+                                            class="form-check-input permission-checkbox permission-item" 
+                                            type="checkbox" 
+                                            name="permissions" 
+                                            value="<%= permission._id %>" 
+                                            id="permission_<%= permission._id %>"
+                                            data-permission-name="<%= permission.name %>"
+                                            <%= assignedPermissionIds.includes(permission._id.toString()) ? 'checked' : '' %>
+                                        >
+                                        <label class="form-check-label fw-bold" for="permission_<%= permission._id %>">
+                                            <%= permission.name %>
+                                        </label>
+                                    </div>
+                                    <% if (permission.is_core) { %>
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-star"></i> Core
+                                        </span>
+                                    <% } %>
+                                </div>
+                                <div class="card-body">
+                                    <% if (permission.description) { %>
+                                        <p class="card-text text-muted mb-2">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            <%= permission.description %>
+                                        </p>
+                                    <% } %>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="fas fa-code me-1"></i>
+                                            ID: <%= permission._id %>
+                                        </small>
+                                        <% if (permission.module) { %>
+                                            <span class="badge bg-info">
+                                                <%= permission.module %>
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                    
+                                    <% if (permission.actions && permission.actions.length > 0) { %>
+                                        <div class="mt-2">
+                                            <small class="text-muted d-block mb-1">Actions:</small>
+                                            <% permission.actions.forEach(action => { %>
+                                                <span class="badge bg-secondary me-1"><%= action %></span>
+                                            <% }); %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <i class="fas fa-info-circle fa-2x mb-3"></i>
+                            <h4>No Permissions Available</h4>
+                            <p class="mb-0">There are currently no permissions to assign to this role.</p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Action Buttons -->
+            <% if (permissions && permissions.length > 0) { %>
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <button type="button" class="btn btn-secondary me-3" onclick="history.back()">
+                            <i class="fas fa-arrow-left me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-success btn-save">
+                            <i class="fas fa-save me-2"></i>Save Role Permissions
+                        </button>
+                    </div>
+                </div>
+            <% } %>
+        </form>
+    </div>
+</div>
+
+<%- contentFor('extra_javascript') %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const permissionCheckboxes = document.querySelectorAll('.permission-item');
+    const permissionCards = document.querySelectorAll('.permission-card');
+    const clearAllBtn = document.getElementById('clearAll');
+    const checkRequiredBtn = document.getElementById('checkRequired');
+    const form = document.getElementById('rolePermissionForm');
+    
+    // Update statistics
+    function updateStats() {
+        const totalPermissions = permissionCheckboxes.length;
+        const selectedPermissions = document.querySelectorAll('.permission-item:checked').length;
+        const remainingPermissions = totalPermissions - selectedPermissions;
+        
+        document.getElementById('totalPermissions').textContent = totalPermissions;
+        document.getElementById('selectedCount').textContent = selectedPermissions;
+        document.getElementById('remainingCount').textContent = remainingPermissions;
+        
+        // Update select all checkbox state
+        if (selectedPermissions === 0) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = false;
+        } else if (selectedPermissions === totalPermissions) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = true;
+        } else {
+            selectAllCheckbox.indeterminate = true;
+        }
+    }
+    
+    // Handle individual permission selection
+    permissionCheckboxes.forEach((checkbox, index) => {
+        checkbox.addEventListener('change', function() {
+            const card = this.closest('.permission-card');
+            if (this.checked) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+            updateStats();
+        });
+    });
+    
+    // Handle card click to toggle checkbox
+    permissionCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            if (e.target.type !== 'checkbox' && e.target.tagName !== 'LABEL') {
+                const checkbox = this.querySelector('.permission-item');
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event('change'));
+            }
+        });
+    });
+    
+    // Handle select all
+    selectAllCheckbox.addEventListener('change', function() {
+        const isChecked = this.checked;
+        permissionCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+            checkbox.dispatchEvent(new Event('change'));
+        });
+    });
+    
+    // Handle clear all
+    clearAllBtn.addEventListener('click', function() {
+        permissionCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+            checkbox.dispatchEvent(new Event('change'));
+        });
+    });
+    
+    // Handle select core permissions
+    checkRequiredBtn.addEventListener('click', function() {
+        // First clear all
+        permissionCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+            checkbox.dispatchEvent(new Event('change'));
+        });
+        
+        // Then select core permissions (assuming they have a 'core' class or data attribute)
+        const corePermissions = document.querySelectorAll('.permission-card .badge.bg-warning');
+        corePermissions.forEach(badge => {
+            const card = badge.closest('.permission-card');
+            const checkbox = card.querySelector('.permission-item');
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new Event('change'));
+        });
+    });
+    
+    // Form submission with confirmation
+    form.addEventListener('submit', function(e) {
+        const selectedPermissions = document.querySelectorAll('.permission-item:checked');
+        
+        if (selectedPermissions.length === 0) {
+            e.preventDefault();
+            alert('Please select at least one permission to assign to this role.');
+            return;
+        }
+        
+        const confirmMessage = `Are you sure you want to assign ${selectedPermissions.length} permission(s) to this role?`;
+        if (!confirm(confirmMessage)) {
+            e.preventDefault();
+        }
+    });
+    
+    // Initialize stats
+    updateStats();
+    
+    // Add loading state to form submission
+    form.addEventListener('submit', function() {
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+        submitBtn.disabled = true;
+        
+        // Re-enable after 5 seconds in case of error
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 5000);
+    });
+});
+
+// Search functionality (optional enhancement)
+function filterPermissions(searchTerm) {
+    const cards = document.querySelectorAll('.permission-card');
+    cards.forEach(card => {
+        const permissionName = card.querySelector('.form-check-label').textContent.toLowerCase();
+        const description = card.querySelector('.card-text')?.textContent.toLowerCase() || '';
+        
+        if (permissionName.includes(searchTerm.toLowerCase()) || description.includes(searchTerm.toLowerCase())) {
+            card.parentElement.style.display = 'block';
+        } else {
+            card.parentElement.style.display = 'none';
+        }
+    });
+}
+</script>

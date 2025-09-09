@@ -1,0 +1,123 @@
+<%- contentFor('extra_css') %>
+  <style>
+    .main-form-section {
+      background-color: #e3f2fd;
+      border: 2px solid #2196f3;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .ace_editor {
+      height: 300px;
+      border-radius: 6.4px;
+    }
+
+    .ace_print-margin {
+      display: none;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ace-builds@1.43.2/css/ace.min.css">
+  <%- contentFor('content') %>
+
+    <div class="container-xxl mt-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card main-form-section">
+            <div class="section-header">
+              <h4 class="mb-0"><i class="fas fa-edit"></i> Create/Update Section</h4>
+            </div>
+
+            <form method="POST">
+              <div class="row mb-4">
+                <div class="col-md-12">
+                  <label for="name" class="form-label">Section Name</label>
+                  <input type="text" class="form-control" id="name" name="name" value="" required>
+                  <small class="text-muted">Internal section name (lowercase)</small>
+                </div>
+              </div>
+
+
+              <hr class="my-4">
+              <div class="mb-4">
+                <label for="content" class="form-label">Content</label>
+                <input type="hidden" name="content" id="combined-content">
+                <div class="row">
+                  <div class="col-md-6">
+                    <h4>HTML</h4>
+                    <div id="content-html"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <h4>CSS</h4>
+                    <div id="content-css"></div>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="my-4">
+              <div class="row">
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save"></i> Create Section
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-lg ms-2" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i> Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- contentFor('extra_javascript') %>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.2/ace.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          let editorHtml, editorCss;
+
+          function updateEditorsTheme() {
+            const isDark = document.getElementsByTagName('html')[0].dataset.bsTheme === 'dark';
+            editorHtml.setTheme(isDark ? "ace/theme/monokai" : "ace/theme/github");
+            editorCss.setTheme(isDark ? "ace/theme/monokai" : "ace/theme/github");
+          }
+
+          editorHtml = ace.edit("content-html");
+          editorHtml.session.setMode("ace/mode/html");
+          
+          editorCss = ace.edit("content-css");
+          editorCss.session.setMode("ace/mode/css");
+
+          updateEditorsTheme();
+
+          const observer = new MutationObserver(() => {
+            updateEditorsTheme();
+          });
+          
+          observer.observe(document.getElementsByTagName('html')[0], {
+            attributes: true,
+            attributeFilter: ['data-bs-theme']
+          });
+
+          document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            const htmlContent = editorHtml.getValue();
+            const cssContent = editorCss.getValue();
+            
+            const combinedContent = `<style>\n${cssContent}\n</style>\n${htmlContent}`;
+            
+            document.getElementById('combined-content').value = combinedContent;
+            
+            this.submit();
+          });
+        });
+      </script>

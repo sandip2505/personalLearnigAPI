@@ -1,0 +1,61 @@
+<%- contentFor('extra_css') %>
+
+<%- contentFor('content') %>
+
+<div class="container-xxl mt-4">
+  <form method="POST" enctype="multipart/form-data">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="name" class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. John Doe">
+      </div>
+      <div class="col-md-6">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username" name="username" required placeholder="e.g. johndoe123">
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" required placeholder="e.g. user@example.com">
+      </div>
+      <div class="col-md-6">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required placeholder="Min 6 characters">
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="profileImage" class="form-label">Profile Image</label>
+        <input type="file" class="form-control" id="profileImage" name="profileImage">
+      </div>
+      <div class="col-md-6">
+        <label for="role" class="form-label">Role</label>
+        <select class="form-control" id="role" name="role" required>
+          <option value="admin">Admin</option>
+          <option value="editor">Editor</option>
+          <option value="author" selected>Author</option>
+          <option value="teacher">Teacher</option>
+          <option value="student">Student</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="isActive" class="form-label">Account Status</label>
+        <select class="form-control" id="isActive" name="isActive">
+          <option value="true" selected>Active</option>
+          <option value="false">Inactive</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create User</button>
+  </form>
+</div>
+
+
+<%- contentFor('extra_javascript') %>

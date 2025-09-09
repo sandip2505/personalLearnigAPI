@@ -1,0 +1,86 @@
+<%- contentFor('extra_css') %>
+
+<%- contentFor('content') %>
+
+<div class="container-xxl mt-4">
+  <h2 class="mb-4">Add Slider</h2>
+
+  <form method="POST" enctype="multipart/form-data">
+    
+    <!-- Image Upload -->
+    <div class="mb-3">
+      <label for="image" class="form-label">Upload Image</label>
+      <input type="file" class="form-control" id="image" name="image" accept="image/*" required onchange="previewImage(event)">
+      <div class="mt-3">
+        <img id="imagePreview" src="#" alt="Preview" style="display: none; max-width: 300px; border-radius: 6px;" />
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Info</label>
+      <input type="text" class="form-control" id="info" name="info" required>
+    </div>
+
+    <!-- Title Category -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Title Category</label>
+      <input type="text" class="form-control" id="titleCategory" name="titleCategory" required>
+    </div>
+
+    <!-- Title -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+
+    <!-- Desc -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" name="desc" rows="3" required></textarea>
+    </div>
+
+    <!-- Slider Button Text -->
+    <div class="mb-3">
+      <label for="link" class="form-label">Slider Button Text</label>
+      <input type="text" class="form-control" id="sliderBtn" name="sliderBtn" required>
+    </div>
+    <!-- Link -->
+    <div class="mb-3">
+      <label for="link" class="form-label">Link</label>
+      <input type="text" class="form-control" id="link" name="link" required>
+    </div>
+
+    <!-- Order -->
+    <div class="mb-3">
+      <label for="order" class="form-label">Order</label>
+      <input type="number" class="form-control" id="order" name="order" value="0">
+    </div>
+
+    <!-- Is Active -->
+    <div class="form-check form-switch mb-3">
+      <input class="form-check-input" type="checkbox" id="isActive" name="isActive"  checked>
+      <label class="form-check-label" for="isActive">Is Active</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<script>
+  function previewImage(event) {
+    const input = event.target;
+    const preview = document.getElementById('imagePreview');
+    
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
+
+<%- contentFor('extra_javascript') %>

@@ -1,0 +1,23 @@
+<%- contentFor('extra_css') %>
+
+<%- contentFor('content') %>
+
+<div class="container-xxl mt-4">
+  <form method="POST">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="roleName" class="form-label">Role Name</label>
+        <input type="text" class="form-control" id="roleName" name="name" required placeholder="e.g. Editor">
+      </div>
+      <div class="col-md-6">
+        <label for="roleDescription" class="form-label">Role Description</label>
+        <input type="text" class="form-control" id="roleDescription" name="description" placeholder="Describe the role">
+      </div>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Create Role</button>
+  </form>
+</div>
+
+<%- contentFor('extra_javascript') %>

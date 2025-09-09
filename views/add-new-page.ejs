@@ -1,0 +1,1757 @@
+<%- contentFor('extra_css') %>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    .page-builder {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .builder-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    .builder-form {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .form-tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .tab-button {
+        flex: 1;
+        padding: 15px 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        color: #6c757d;
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+    }
+    
+    .tab-button.active {
+        color: #495057;
+        border-bottom-color: #667eea;
+        background: white;
+    }
+    
+    .tab-content {
+        display: none;
+        padding: 30px;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    
+    .form-row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 15px;
+    }
+    
+    /* Sections Builder */
+    .sections-builder {
+        border: 2px dashed #e9ecef;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .section-item {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .section-item:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .section-header {
+        padding: 15px 20px;
+        background: white;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+    }
+    
+    .section-title {
+        font-weight: 600;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .section-controls {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-icon:hover {
+        transform: translateY(-2px);
+    }
+    
+    .btn-toggle {
+        background: #28a745;
+        color: white;
+    }
+    
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .btn-move {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .section-content {
+        padding: 20px;
+        display: none;
+        background: white;
+    }
+    
+    .section-content.active {
+        display: block;
+    }
+    
+    .add-section-btn {
+        width: 100%;
+        padding: 15px;
+        border: 2px dashed #667eea;
+        background: none;
+        color: #667eea;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .add-section-btn:hover {
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .section-type-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .section-type-card {
+        padding: 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .section-type-card:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .section-type-card i {
+        font-size: 32px;
+        color: #667eea;
+        margin-bottom: 10px;
+    }
+    
+    .dynamic-fields {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 15px;
+        background: #f8f9fa;
+    }
+    
+    .array-field {
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: white;
+    }
+    
+    .array-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-success {
+        background: #28a745;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-right: 5px;
+    }
+    
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+    
+    .preview-section {
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 400px;
+        height: 100vh;
+        background: white;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+    
+    .preview-section.active {
+        right: 0;
+    }
+    
+    .preview-header {
+        padding: 20px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .close-preview {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #6c757d;
+    }
+    
+    .form-actions {
+        padding: 30px;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+    }
+    
+    .color-picker {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .color-preview {
+        width: 30px;
+        height: 30px;
+        border: 2px solid #e9ecef;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    @media (max-width: 768px) {
+        .form-row,
+        .form-row-3 {
+            grid-template-columns: 1fr;
+        }
+        
+        .section-type-selector {
+            grid-template-columns: 1fr;
+        }
+        
+        .preview-section {
+            width: 100%;
+            right: -100%;
+        }
+    }
+</style>
+
+<%- contentFor('content') %>
+<div class="page-builder">
+    <div class="builder-header">
+        <h1><i class="fas fa-magic"></i> Page Builder</h1>
+        <p>Create beautiful, dynamic pages with our intuitive drag-and-drop builder</p>
+    </div>
+
+    <form id="pageBuilderForm" class="builder-form" action="/admin/pages" method="POST">
+        <div class="form-tabs">
+            <button type="button" class="tab-button active" data-tab="basic">
+                <i class="fas fa-info-circle"></i> Basic Info
+            </button>
+            <button type="button" class="tab-button" data-tab="header">
+                <i class="fas fa-header"></i> Header
+            </button>
+            <button type="button" class="tab-button" data-tab="sections">
+                <i class="fas fa-puzzle-piece"></i> Sections
+            </button>
+            <button type="button" class="tab-button" data-tab="footer">
+                <i class="fas fa-shoe-prints"></i> Footer
+            </button>
+            <button type="button" class="tab-button" data-tab="seo">
+                <i class="fas fa-search"></i> SEO
+            </button>
+            <button type="button" class="tab-button" data-tab="styling">
+                <i class="fas fa-palette"></i> Styling
+            </button>
+        </div>
+
+        <!-- Basic Info Tab -->
+        <div class="tab-content active" data-tab="basic">
+            <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="title">Page Title *</label>
+                    <input type="text" id="title" name="title" required placeholder="Enter page title">
+                </div>
+                <div class="form-group">
+                    <label for="slug">URL Slug *</label>
+                    <input type="text" id="slug" name="slug" required placeholder="page-url-slug">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="pageType">Page Type</label>
+                    <select id="pageType" name="pageType">
+                        <option value="homepage">Homepage</option>
+                        <option value="about">About</option>
+                        <option value="courses">Courses</option>
+                        <option value="contact">Contact</option>
+                        <option value="blog">Blog</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                        <option value="archived">Archived</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header Tab -->
+        <div class="tab-content" data-tab="header">
+            <h3><i class="fas fa-header"></i> Header Configuration</h3>
+            
+            <div class="form-group">
+                <label for="header.logo">Logo URL</label>
+                <input type="text" name="header[logo]" placeholder="https://example.com/logo.png">
+            </div>
+
+            <div class="form-group">
+                <label>Navigation Menu</label>
+                <div id="navigationItems">
+                    <div class="array-field">
+                        <div class="array-header">
+                            <strong>Menu Item #1</strong>
+                            <button type="button" class="btn-danger" onclick="removeArrayItem(this)">Remove</button>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Label</label>
+                                <input type="text" name="header[navigation][0][label]" placeholder="Home">
+                            </div>
+                            <div class="form-group">
+                                <label>URL</label>
+                                <input type="text" name="header[navigation][0][url]" placeholder="/">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Order</label>
+                                <input type="number" name="header[navigation][0][order]" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" name="header[navigation][0][isExternal]"> External Link
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-success" onclick="addNavigationItem()">Add Menu Item</button>
+            </div>
+
+            <div class="form-group">
+                <h4>CTA Button</h4>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Button Text</label>
+                        <input type="text" name="header[ctaButton][text]" placeholder="Get Started">
+                    </div>
+                    <div class="form-group">
+                        <label>Button URL</label>
+                        <input type="text" name="header[ctaButton][url]" placeholder="/signup">
+                    </div>
+                    <div class="form-group">
+                        <label>Button Style</label>
+                        <select name="header[ctaButton][style]">
+                            <option value="primary">Primary</option>
+                            <option value="secondary">Secondary</option>
+                            <option value="outline">Outline</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="header[sticky]"> Sticky Header
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="header[transparent]"> Transparent Header
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sections Tab -->
+        <div class="tab-content" data-tab="sections">
+            <h3><i class="fas fa-puzzle-piece"></i> Page Sections</h3>
+            
+            <div class="sections-builder">
+                <div id="sectionsContainer">
+                    <!-- Dynamic sections will be added here -->
+                </div>
+                
+                <button type="button" class="add-section-btn" onclick="showSectionSelector()">
+                    <i class="fas fa-plus"></i> Add New Section
+                </button>
+                
+                <div id="sectionSelector" style="display: none;">
+                    <div class="section-type-selector">
+                        <div class="section-type-card" onclick="addSection('hero')">
+                            <i class="fas fa-star"></i>
+                            <h4>Hero</h4>
+                            <p>Main banner section</p>
+                        </div>
+                        <div class="section-type-card" onclick="addSection('features')">
+                            <i class="fas fa-list"></i>
+                            <h4>Features</h4>
+                            <p>Feature highlights</p>
+                        </div>
+                        <div class="section-type-card" onclick="addSection('courses')">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h4>Courses</h4>
+                            <p>Course listings</p>
+                        </div>
+                        <div class="section-type-card" onclick="addSection('teachers')">
+                            <i class="fas fa-users"></i>
+                            <h4>Teachers</h4>
+                            <p>Instructor profiles</p>
+                        </div>
+                        <div class="section-type-card" onclick="addSection('testimonials')">
+                            <i class="fas fa-quote-left"></i>
+                            <h4>Testimonials</h4>
+                            <p>Customer reviews</p>
+                        </div>
+                        <div class="section-type-card" onclick="addSection('cta')">
+                            <i class="fas fa-bullhorn"></i>
+                            <h4>Call to Action</h4>
+                            <p>Action buttons</p>
+                        </div>
+                        <div class="section-type-card" onclick="addSection('stats')">
+                            <i class="fas fa-chart-bar"></i>
+                            <h4>Statistics</h4>
+                            <p>Number highlights</p>
+                        </div>
+                        <div class="section-type-card" onclick="addSection('gallery')">
+                            <i class="fas fa-images"></i>
+                            <h4>Gallery</h4>
+                            <p>Image showcase</p>
+                        </div>
+                        <div class="section-type-card" onclick="addSection('faq')">
+                            <i class="fas fa-question-circle"></i>
+                            <h4>FAQ</h4>
+                            <p>Questions & answers</p>
+                        </div>
+                        <div class="section-type-card" onclick="addSection('contact')">
+                            <i class="fas fa-envelope"></i>
+                            <h4>Contact</h4>
+                            <p>Contact information</p>
+                        </div>
+                        <div class="section-type-card" onclick="addSection('custom')">
+                            <i class="fas fa-code"></i>
+                            <h4>Custom</h4>
+                            <p>Custom HTML/CSS</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Tab -->
+        <div class="tab-content" data-tab="footer">
+            <h3><i class="fas fa-shoe-prints"></i> Footer Configuration</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="footer.logo">Footer Logo</label>
+                    <input type="text" name="footer[logo]" placeholder="https://example.com/footer-logo.png">
+                </div>
+                <div class="form-group">
+                    <label for="footer.description">Description</label>
+                    <textarea name="footer[description]" rows="3" placeholder="Footer description"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Footer Columns</label>
+                <div id="footerColumns">
+                    <div class="array-field">
+                        <div class="array-header">
+                            <strong>Column #1</strong>
+                            <button type="button" class="btn-danger" onclick="removeArrayItem(this)">Remove</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Column Title</label>
+                            <input type="text" name="footer[columns][0][title]" placeholder="Quick Links">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-success" onclick="addFooterColumn()">Add Column</button>
+            </div>
+
+            <div class="form-group">
+                <label for="footer.copyright">Copyright Text</label>
+                <input type="text" name="footer[copyright]" placeholder="© 2024 Your Company. All rights reserved.">
+            </div>
+        </div>
+
+        <!-- SEO Tab -->
+        <div class="tab-content" data-tab="seo">
+            <h3><i class="fas fa-search"></i> SEO Settings</h3>
+            
+            <div class="form-group">
+                <label for="seo.metaTitle">Meta Title</label>
+                <input type="text" name="seo[metaTitle]" placeholder="Page title for search engines">
+            </div>
+
+            <div class="form-group">
+                <label for="seo.metaDescription">Meta Description</label>
+                <textarea name="seo[metaDescription]" rows="3" placeholder="Brief description for search results"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="seo.keywords">Keywords (comma separated)</label>
+                <input type="text" name="seo[keywords]" placeholder="keyword1, keyword2, keyword3">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="seo.ogImage">Open Graph Image</label>
+                    <input type="text" name="seo[ogImage]" placeholder="https://example.com/og-image.jpg">
+                </div>
+                <div class="form-group">
+                    <label for="seo.canonicalUrl">Canonical URL</label>
+                    <input type="text" name="seo[canonicalUrl]" placeholder="https://example.com/page">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="seo.robots">Robots</label>
+                <select name="seo[robots]">
+                    <option value="index,follow">Index, Follow</option>
+                    <option value="noindex,follow">No Index, Follow</option>
+                    <option value="index,nofollow">Index, No Follow</option>
+                    <option value="noindex,nofollow">No Index, No Follow</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Styling Tab -->
+        <div class="tab-content" data-tab="styling">
+            <h3><i class="fas fa-palette"></i> Global Styling</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="globalStyling.primaryColor">Primary Color</label>
+                    <div class="color-picker">
+                        <input type="color" name="globalStyling[primaryColor]" value="#667eea">
+                        <div class="color-preview" style="background-color: #667eea;"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="globalStyling.secondaryColor">Secondary Color</label>
+                    <div class="color-picker">
+                        <input type="color" name="globalStyling[secondaryColor]" value="#764ba2">
+                        <div class="color-preview" style="background-color: #764ba2;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="globalStyling.fontFamily">Font Family</label>
+                    <select name="globalStyling[fontFamily]">
+                        <option value="'Segoe UI', system-ui">Segoe UI</option>
+                        <option value="'Roboto', sans-serif">Roboto</option>
+                        <option value="'Inter', sans-serif">Inter</option>
+                        <option value="'Poppins', sans-serif">Poppins</option>
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="globalStyling.theme">Theme</label>
+                    <select name="globalStyling[theme]">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="auto">Auto</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="globalStyling.customCSS">Custom CSS</label>
+                <textarea name="globalStyling[customCSS]" rows="10" placeholder="/* Add your custom CSS here */"></textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="showPreview()">
+                <i class="fas fa-eye"></i> Preview
+            </button>
+            <button type="button" class="btn-secondary">
+                <i class="fas fa-save"></i> Save Draft
+            </button>
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-rocket"></i> Create Page
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Preview Panel -->
+<div id="previewPanel" class="preview-section">
+    <div class="preview-header">
+        <h4><i class="fas fa-eye"></i> Live Preview</h4>
+        <button class="close-preview" onclick="closePreview()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div id="previewContent">
+        <!-- Preview content will be generated here -->
+    </div>
+</div>
+
+<%- contentFor('extra_javascript') %>
+<script>
+let sectionCounter = 0;
+let navigationCounter = 1;
+let footerColumnCounter = 1;
+
+// Tab switching functionality
+document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const tabName = this.dataset.tab;
+        
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Add active class to clicked tab and corresponding content
+        this.classList.add('active');
+        document.querySelector(`[data-tab="${tabName}"].tab-content`).classList.add('active');
+    });
+});
+
+// Auto-generate slug from title
+document.getElementById('title').addEventListener('input', function() {
+    const slug = this.value.toLowerCase()
+        .replace(/[^a-z0-9 -]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim('-');
+    document.getElementById('slug').value = slug;
+});
+
+// Section management functions
+function showSectionSelector() {
+    const selector = document.getElementById('sectionSelector');
+    selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
+}
+
+function addSection(type) {
+    const container = document.getElementById('sectionsContainer');
+    const sectionId = `section_${sectionCounter++}`;
+    
+    const sectionHtml = generateSectionHtml(type, sectionId);
+    container.insertAdjacentHTML('beforeend', sectionHtml);
+    
+    document.getElementById('sectionSelector').style.display = 'none';
+    
+    // Initialize section content
+    const newSection = document.getElementById(sectionId);
+    const contentDiv = newSection.querySelector('.section-content');
+    contentDiv.innerHTML = generateSectionContent(type, sectionCounter - 1);
+}
+
+function generateSectionHtml(type, sectionId) {
+    const icons = {
+        hero: 'fas fa-star',
+        features: 'fas fa-list',
+        courses: 'fas fa-graduation-cap',
+        teachers: 'fas fa-users',
+        testimonials: 'fas fa-quote-left',
+        cta: 'fas fa-bullhorn',
+        stats: 'fas fa-chart-bar',
+        gallery: 'fas fa-images',
+        faq: 'fas fa-question-circle',
+        contact: 'fas fa-envelope',
+        custom: 'fas fa-code'
+    };
+    
+    return `
+        <div class="section-item" id="${sectionId}">
+            <div class="section-header" onclick="toggleSection('${sectionId}')">
+                <div class="section-title">
+                    <i class="${icons[type]}"></i>
+                    <span>${type.charAt(0).toUpperCase() + type.slice(1)} Section</span>
+                </div>
+                <div class="section-controls">
+                    <button type="button" class="btn-icon btn-move" onclick="event.stopPropagation(); moveSectionUp('${sectionId}')">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button type="button" class="btn-icon btn-move" onclick="event.stopPropagation(); moveSectionDown('${sectionId}')">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                    <button type="button" class="btn-icon btn-toggle" onclick="event.stopPropagation(); toggleSectionVisibility('${sectionId}')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button type="button" class="btn-icon btn-delete" onclick="event.stopPropagation(); removeSection('${sectionId}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="section-content">
+                <!-- Content will be populated by generateSectionContent -->
+            </div>
+            <input type="hidden" name="sections[${sectionCounter - 1}][type]" value="${type}">
+            <input type="hidden" name="sections[${sectionCounter - 1}][order]" value="${sectionCounter - 1}">
+            <input type="hidden" name="sections[${sectionCounter - 1}][isVisible]" value="true">
+        </div>
+    `;
+}
+
+function generateSectionContent(type, index) {
+    switch(type) {
+        case 'hero':
+            return `
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Main Heading</label>
+                        <input type="text" name="sections[${index}][content][hero][mainHeading]" placeholder="Welcome to Our Platform">
+                    </div>
+                    <div class="form-group">
+                        <label>Sub Heading</label>
+                        <input type="text" name="sections[${index}][content][hero][subHeading]" placeholder="Discover amazing features">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Background Image</label>
+                        <input type="text" name="sections[${index}][content][hero][backgroundImage]" placeholder="https://example.com/hero-bg.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label>Background Video</label>
+                        <input type="text" name="sections[${index}][content][hero][backgroundVideo]" placeholder="https://example.com/hero-video.mp4">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Primary Button Text</label>
+                        <input type="text" name="sections[${index}][content][hero][buttonText]" placeholder="Get Started">
+                    </div>
+                    <div class="form-group">
+                        <label>Primary Button Link</label>
+                        <input type="text" name="sections[${index}][content][hero][buttonLink]" placeholder="/signup">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Secondary Button Text</label>
+                        <input type="text" name="sections[${index}][content][hero][secondaryButtonText]" placeholder="Learn More">
+                    </div>
+                    <div class="form-group">
+                        <label>Secondary Button Link</label>
+                        <input type="text" name="sections[${index}][content][hero][secondaryButtonLink]" placeholder="/about">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <h4>Overlay Settings</h4>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="sections[${index}][content][hero][overlay][enabled]"> Enable Overlay
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Overlay Color</label>
+                            <input type="color" name="sections[${index}][content][hero][overlay][color]" value="#000000">
+                        </div>
+                        <div class="form-group">
+                            <label>Opacity</label>
+                            <input type="range" name="sections[${index}][content][hero][overlay][opacity]" min="0" max="1" step="0.1" value="0.5">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+        case 'features':
+            return `
+                <div class="form-group">
+                    <label>Section Title</label>
+                    <input type="text" name="sections[${index}][title]" placeholder="Our Amazing Features">
+                </div>
+                <div class="form-group">
+                    <label>Section Subtitle</label>
+                    <input type="text" name="sections[${index}][subtitle]" placeholder="Why choose us">
+                </div>
+                <div class="form-group">
+                    <label>Features</label>
+                    <div id="features_${index}">
+                        <div class="array-field">
+                            <div class="array-header">
+                                <strong>Feature #1</strong>
+                                <button type="button" class="btn-danger" onclick="removeArrayItem(this)">Remove</button>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Icon (Font Awesome class)</label>
+                                    <input type="text" name="sections[${index}][content][features][0][icon]" placeholder="fas fa-star">
+                                </div>
+                                <div class="form-group">
+                                    <label>Title</label>
+                                    <input type="text" name="sections[${index}][content][features][0][title]" placeholder="Amazing Feature">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea name="sections[${index}][content][features][0][description]" rows="3" placeholder="Feature description"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Link</label>
+                                    <input type="text" name="sections[${index}][content][features][0][link]" placeholder="/feature-details">
+                                </div>
+                                <div class="form-group">
+                                    <label>Color</label>
+                                    <input type="color" name="sections[${index}][content][features][0][color]" value="#667eea">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-success" onclick="addFeatureItem(${index})">Add Feature</button>
+                </div>
+            `;
+            
+        case 'courses':
+            return `
+                <div class="form-group">
+                    <label>Section Title</label>
+                    <input type="text" name="sections[${index}][title]" placeholder="Popular Courses">
+                </div>
+                <div class="form-group">
+                    <label>Courses</label>
+                    <div id="courses_${index}">
+                        <div class="array-field">
+                            <div class="array-header">
+                                <strong>Course #1</strong>
+                                <button type="button" class="btn-danger" onclick="removeArrayItem(this)">Remove</button>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Course Title</label>
+                                    <input type="text" name="sections[${index}][content][courses][0][title]" placeholder="Web Development Bootcamp">
+                                </div>
+                                <div class="form-group">
+                                    <label>Thumbnail</label>
+                                    <input type="text" name="sections[${index}][content][courses][0][thumbnail]" placeholder="https://example.com/course-thumb.jpg">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea name="sections[${index}][content][courses][0][description]" rows="3" placeholder="Course description"></textarea>
+                            </div>
+                            <div class="form-row-3">
+                                <div class="form-group">
+                                    <label>Current Price</label>
+                                    <input type="number" name="sections[${index}][content][courses][0][price][current]" placeholder="99">
+                                </div>
+                                <div class="form-group">
+                                    <label>Original Price</label>
+                                    <input type="number" name="sections[${index}][content][courses][0][price][original]" placeholder="199">
+                                </div>
+                                <div class="form-group">
+                                    <label>Currency</label>
+                                    <select name="sections[${index}][content][courses][0][price][currency]">
+                                        <option value="USD">USD</option>
+                                        <option value="EUR">EUR</option>
+                                        <option value="GBP">GBP</option>
+                                        <option value="INR">INR</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row-3">
+                                <div class="form-group">
+                                    <label>Duration</label>
+                                    <input type="text" name="sections[${index}][content][courses][0][duration]" placeholder="8 weeks">
+                                </div>
+                                <div class="form-group">
+                                    <label>Level</label>
+                                    <select name="sections[${index}][content][courses][0][level]">
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Rating</label>
+                                    <input type="number" name="sections[${index}][content][courses][0][rating]" min="0" max="5" step="0.1" placeholder="4.5">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-success" onclick="addCourseItem(${index})">Add Course</button>
+                </div>
+            `;
+            
+        case 'testimonials':
+            return `
+                <div class="form-group">
+                    <label>Section Title</label>
+                    <input type="text" name="sections[${index}][title]" placeholder="What Our Students Say">
+                </div>
+                <div class="form-group">
+                    <label>Testimonials</label>
+                    <div id="testimonials_${index}">
+                        <div class="array-field">
+                            <div class="array-header">
+                                <strong>Testimonial #1</strong>
+                                <button type="button" class="btn-danger" onclick="removeArrayItem(this)">Remove</button>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" name="sections[${index}][content][testimonials][0][name]" placeholder="John Doe">
+                                </div>
+                                <div class="form-group">
+                                    <label>Title/Position</label>
+                                    <input type="text" name="sections[${index}][content][testimonials][0][title]" placeholder="Software Developer">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Company</label>
+                                    <input type="text" name="sections[${index}][content][testimonials][0][company]" placeholder="Tech Corp">
+                                </div>
+                                <div class="form-group">
+                                    <label>Avatar</label>
+                                    <input type="text" name="sections[${index}][content][testimonials][0][avatar]" placeholder="https://example.com/avatar.jpg">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Comment</label>
+                                <textarea name="sections[${index}][content][testimonials][0][comment]" rows="4" placeholder="This course changed my life..."></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Rating</label>
+                                    <input type="number" name="sections[${index}][content][testimonials][0][rating]" min="1" max="5" value="5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Course</label>
+                                    <input type="text" name="sections[${index}][content][testimonials][0][course]" placeholder="Web Development">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-success" onclick="addTestimonialItem(${index})">Add Testimonial</button>
+                </div>
+            `;
+            
+        case 'cta':
+            return `
+                <div class="form-group">
+                    <label>Heading</label>
+                    <input type="text" name="sections[${index}][content][cta][heading]" placeholder="Ready to Get Started?">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="sections[${index}][content][cta][description]" rows="3" placeholder="Join thousands of students already learning"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Button Text</label>
+                        <input type="text" name="sections[${index}][content][cta][buttonText]" placeholder="Start Learning">
+                    </div>
+                    <div class="form-group">
+                        <label>Button Link</label>
+                        <input type="text" name="sections[${index}][content][cta][buttonLink]" placeholder="/signup">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Background Image</label>
+                        <input type="text" name="sections[${index}][content][cta][backgroundImage]" placeholder="https://example.com/cta-bg.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label>Background Color</label>
+                        <input type="color" name="sections[${index}][content][cta][backgroundColor]" value="#667eea">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Text Color</label>
+                        <input type="color" name="sections[${index}][content][cta][textColor]" value="#ffffff">
+                    </div>
+                    <div class="form-group">
+                        <label>Button Style</label>
+                        <select name="sections[${index}][content][cta][buttonStyle]">
+                            <option value="primary">Primary</option>
+                            <option value="secondary">Secondary</option>
+                            <option value="outline">Outline</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            
+        case 'stats':
+            return `
+                <div class="form-group">
+                    <label>Section Title</label>
+                    <input type="text" name="sections[${index}][title]" placeholder="Our Achievement">
+                </div>
+                <div class="form-group">
+                    <label>Statistics</label>
+                    <div id="stats_${index}">
+                        <div class="array-field">
+                            <div class="array-header">
+                                <strong>Stat #1</strong>
+                                <button type="button" class="btn-danger" onclick="removeArrayItem(this)">Remove</button>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Label</label>
+                                    <input type="text" name="sections[${index}][content][stats][0][label]" placeholder="Students Enrolled">
+                                </div>
+                                <div class="form-group">
+                                    <label>Value</label>
+                                    <input type="text" name="sections[${index}][content][stats][0][value]" placeholder="10000">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Icon</label>
+                                    <input type="text" name="sections[${index}][content][stats][0][icon]" placeholder="fas fa-users">
+                                </div>
+                                <div class="form-group">
+                                    <label>Suffix</label>
+                                    <input type="text" name="sections[${index}][content][stats][0][suffix]" placeholder="+">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-success" onclick="addStatItem(${index})">Add Statistic</button>
+                </div>
+            `;
+            
+        case 'faq':
+            return `
+                <div class="form-group">
+                    <label>Section Title</label>
+                    <input type="text" name="sections[${index}][title]" placeholder="Frequently Asked Questions">
+                </div>
+                <div class="form-group">
+                    <label>FAQ Items</label>
+                    <div id="faq_${index}">
+                        <div class="array-field">
+                            <div class="array-header">
+                                <strong>FAQ #1</strong>
+                                <button type="button" class="btn-danger" onclick="removeArrayItem(this)">Remove</button>
+                            </div>
+                            <div class="form-group">
+                                <label>Question</label>
+                                <input type="text" name="sections[${index}][content][faq][0][question]" placeholder="What is included in the course?">
+                            </div>
+                            <div class="form-group">
+                                <label>Answer</label>
+                                <textarea name="sections[${index}][content][faq][0][answer]" rows="4" placeholder="The course includes..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <input type="text" name="sections[${index}][content][faq][0][category]" placeholder="General">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-success" onclick="addFaqItem(${index})">Add FAQ</button>
+                </div>
+            `;
+            
+        case 'contact':
+            return `
+                <div class="form-group">
+                    <label>Heading</label>
+                    <input type="text" name="sections[${index}][content][contact][heading]" placeholder="Get In Touch">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="sections[${index}][content][contact][description]" rows="3" placeholder="We'd love to hear from you"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="sections[${index}][content][contact][email]" placeholder="info@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" name="sections[${index}][content][contact][phone]" placeholder="+1 234 567 8900">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea name="sections[${index}][content][contact][address]" rows="3" placeholder="123 Main St, City, State 12345"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Map URL (Google Maps Embed)</label>
+                    <input type="text" name="sections[${index}][content][contact][mapUrl]" placeholder="https://maps.google.com/embed?...">
+                </div>
+            `;
+            
+        case 'custom':
+            return `
+                <div class="form-group">
+                    <label>Section Title</label>
+                    <input type="text" name="sections[${index}][title]" placeholder="Custom Section">
+                </div>
+                <div class="form-group">
+                    <label>Custom HTML</label>
+                    <textarea name="sections[${index}][content][custom][html]" rows="8" placeholder="<div>Your custom HTML here</div>"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Custom CSS</label>
+                    <textarea name="sections[${index}][content][custom][css]" rows="6" placeholder="/* Your custom CSS here */"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Custom JavaScript</label>
+                    <textarea name="sections[${index}][content][custom][javascript]" rows="6" placeholder="// Your custom JavaScript here"></textarea>
+                </div>
+            `;
+            
+        default:
+            return '<p>Section content not implemented yet.</p>';
+    }
+}
+
+// Section management functions
+function toggleSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    const content = section.querySelector('.section-content');
+    content.classList.toggle('active');
+}
+
+function removeSection(sectionId) {
+    if (confirm('Are you sure you want to remove this section?')) {
+        document.getElementById(sectionId).remove();
+    }
+}
+
+function moveSectionUp(sectionId) {
+    const section = document.getElementById(sectionId);
+    const prevSection = section.previousElementSibling;
+    if (prevSection) {
+        section.parentNode.insertBefore(section, prevSection);
+    }
+}
+
+function moveSectionDown(sectionId) {
+    const section = document.getElementById(sectionId);
+    const nextSection = section.nextElementSibling;
+    if (nextSection) {
+        section.parentNode.insertBefore(nextSection, section);
+    }
+}
+
+function toggleSectionVisibility(sectionId) {
+    const section = document.getElementById(sectionId);
+    const visibilityInput = section.querySelector('input[name*="[isVisible]"]');
+    const toggleBtn = section.querySelector('.btn-toggle i');
+    
+    const isVisible = visibilityInput.value === 'true';
+    visibilityInput.value = !isVisible;
+    
+    if (isVisible) {
+        section.style.opacity = '0.5';
+        toggleBtn.className = 'fas fa-eye-slash';
+    } else {
+        section.style.opacity = '1';
+        toggleBtn.className = 'fas fa-eye';
+    }
+}
+
+// Array field management functions
+function removeArrayItem(button) {
+    if (confirm('Are you sure you want to remove this item?')) {
+        button.closest('.array-field').remove();
+    }
+}
+
+function addNavigationItem() {
+    const container = document.getElementById('navigationItems');
+    const itemHtml = `
+        <div class="array-field">
+            <div class="array-header">
+                <strong>Menu Item #${navigationCounter + 1}</strong>
+                <button type="button" class="btn-danger" onclick="removeArrayItem(this)">Remove</button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Label</label>
+                    <input type="text" name="header[navigation][${navigationCounter}][label]" placeholder="Menu Item">
+                </div>
+                <div class="form-group">
+                    <label>URL</label>
+                    <input type="text" name="header[navigation][${navigationCounter}][url]" placeholder="/page">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Order</label>
+                    <input type="number" name="header[navigation][${navigationCounter}][order]" value="${navigationCounter}">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="header[navigation][${navigationCounter}][isExternal]"> External Link
+                    </label>
+                </div>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', itemHtml);
+    navigationCounter++;
+}
+
+function addFooterColumn() {
+    const container = document.getElementById('footerColumns');
+    const columnHtml = `
+        <div class="array-field">
+            <div class="array-header">
+                <strong>Column #${footerColumnCounter + 1}</strong>
+                <button type="button" class="btn-danger" onclick="removeArrayItem(this)">Remove</button>
+            </div>
+            <div class="form-group">
+                <label>Column Title</label>
+                <input type="text" name="footer[columns][${footerColumnCounter}][title]" placeholder="Column Title">
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', columnHtml);
+    footerColumnCounter++;
+}
+
+// Dynamic section content functions
+function addFeatureItem(sectionIndex) {
+    const container = document.getElementById(`features_${sectionIndex}`);
+    const itemCount = container.children.length;
+    const itemHtml = `
+        <div class="array-field">
+            <div class="array-header">
+                <strong>Feature #${itemCount + 1}</strong>
+                <button type="button" class="btn-danger" onclick="removeArrayItem(this)">Remove</button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Icon (Font Awesome class)</label>
+                    <input type="text" name="sections[${sectionIndex}][content][features][${itemCount}][icon]" placeholder="fas fa-star">
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="sections[${sectionIndex}][content][features][${itemCount}][title]" placeholder="Amazing Feature">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="sections[${sectionIndex}][content][features][${itemCount}][description]" rows="3" placeholder="Feature description"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Link</label>
+                    <input type="text" name="sections[${sectionIndex}][content][features][${itemCount}][link]" placeholder="/feature-details">
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="color" name="sections[${sectionIndex}][content][features][${itemCount}][color]" value="#667eea">
+                </div>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', itemHtml);
+}
+
+function addCourseItem(sectionIndex) {
+    const container = document.getElementById(`courses_${sectionIndex}`);
+    const itemCount = container.children.length;
+    // Add similar HTML structure for course items
+    // Implementation similar to addFeatureItem but with course-specific fields
+}
+
+function addTestimonialItem(sectionIndex) {
+    const container = document.getElementById(`testimonials_${sectionIndex}`);
+    const itemCount = container.children.length;
+    // Add testimonial item HTML
+}
+
+function addStatItem(sectionIndex) {
+    const container = document.getElementById(`stats_${sectionIndex}`);
+    const itemCount = container.children.length;
+    // Add stat item HTML
+}
+
+function addFaqItem(sectionIndex) {
+    const container = document.getElementById(`faq_${sectionIndex}`);
+    const itemCount = container.children.length;
+    // Add FAQ item HTML
+}
+
+// Preview functionality
+function showPreview() {
+    const previewPanel = document.getElementById('previewPanel');
+    previewPanel.classList.add('active');
+    
+    // Generate preview content
+    const formData = new FormData(document.getElementById('pageBuilderForm'));
+    generatePreview(formData);
+}
+
+function closePreview() {
+    document.getElementById('previewPanel').classList.remove('active');
+}
+
+function generatePreview(formData) {
+    const previewContent = document.getElementById('previewContent');
+    previewContent.innerHTML = '<div style="padding: 20px; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Generating preview...</div>';
+    
+    // This would typically make an AJAX call to generate preview
+    setTimeout(() => {
+        previewContent.innerHTML = `
+            <div style="padding: 20px;">
+                <h3>Preview Mode</h3>
+                <p>This is a mockup of how your page will look. The actual preview would be generated server-side.</p>
+                <div style="background: #f8f9fa; padding: 20px; margin: 10px 0; border-radius: 8px;">
+                    <h4>Page Title: ${formData.get('title') || 'Untitled Page'}</h4>
+                    <p><strong>Slug:</strong> ${formData.get('slug') || 'untitled-page'}</p>
+                    <p><strong>Type:</strong> ${formData.get('pageType') || 'homepage'}</p>
+                    <p><strong>Status:</strong> ${formData.get('status') || 'draft'}</p>
+                </div>
+            </div>
+        `;
+    }, 1000);
+}
+
+// Form submission handling
+document.getElementById('pageBuilderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Validate required fields
+    const title = document.getElementById('title').value;
+    const slug = document.getElementById('slug').value;
+    
+    if (!title || !slug) {
+        alert('Please fill in the required fields: Title and Slug');
+        return;
+    }
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Page...';
+    submitBtn.disabled = true;
+    
+    // Simulate form submission (replace with actual AJAX call)
+    setTimeout(() => {
+        alert('Page created successfully!');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        // window.location.href = '/admin/pages'; // Redirect after successful creation
+    }, 2000);
+});
+
+// Color picker functionality
+document.querySelectorAll('input[type="color"]').forEach(colorInput => {
+    colorInput.addEventListener('change', function() {
+        const preview = this.parentNode.querySelector('.color-preview');
+        if (preview) {
+            preview.style.backgroundColor = this.value;
+        }
+    });
+});
+
+// Auto-save functionality (optional)
+let autoSaveTimer;
+function autoSave() {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => {
+        const formData = new FormData(document.getElementById('pageBuilderForm'));
+        // Implement auto-save logic here
+        console.log('Auto-saving...');
+    }, 5000); // Auto-save after 5 seconds of inactivity
+}
+
+// Add event listeners for auto-save
+document.getElementById('pageBuilderForm').addEventListener('input', autoSave);
+document.getElementById('pageBuilderForm').addEventListener('change', autoSave);
+
+// Sortable sections (if you want to add drag-and-drop functionality)
+// This would require a library like SortableJS
+// Example implementation:
+/*
+if (typeof Sortable !== 'undefined') {
+    const sectionsContainer = document.getElementById('sectionsContainer');
+    new Sortable(sectionsContainer, {
+        animation: 150,
+        handle: '.btn-move',
+        onEnd: function(evt) {
+            // Update section order
+            updateSectionOrder();
+        }
+    });
+}
+*/
+
+function updateSectionOrder() {
+    const sections = document.querySelectorAll('#sectionsContainer .section-item');
+    sections.forEach((section, index) => {
+        const orderInput = section.querySelector('input[name*="[order]"]');
+        if (orderInput) {
+            orderInput.value = index;
+        }
+    });
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + S to save
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        document.getElementById('pageBuilderForm').dispatchEvent(new Event('submit'));
+    }
+    
+    // Ctrl/Cmd + P to preview
+    if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        showPreview();
+    }
+    
+    // Escape to close preview
+    if (e.key === 'Escape') {
+        closePreview();
+    }
+});
+
+// Initialize tooltips (if using Bootstrap or similar)
+// This would initialize any tooltips you might have
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize any additional components
+    console.log('Page Builder initialized');
+    
+    // Set default values
+    document.getElementById('title').focus();
+    
+    // Add sample section for demonstration
+    // addSection('hero');
+});
+
+// Helper function to validate URLs
+function isValidUrl(string) {
+    try {
+        new URL(string);
+        return true;
+    } catch (_) {
+        return false;
+    }
+}
+
+// Helper function to validate email
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Form validation before submission
+function validateForm() {
+    const errors = [];
+    
+    // Required fields
+    const title = document.getElementById('title').value.trim();
+    const slug = document.getElementById('slug').value.trim();
+    
+    if (!title) errors.push('Page title is required');
+    if (!slug) errors.push('URL slug is required');
+    
+    // URL validation for links and images
+    const urlInputs = document.querySelectorAll('input[type="url"], input[placeholder*="http"]');
+    urlInputs.forEach(input => {
+        if (input.value && !isValidUrl(input.value)) {
+            errors.push(`Invalid URL: ${input.value}`);
+        }
+    });
+    
+    // Email validation
+    const emailInputs = document.querySelectorAll('input[type="email"]');
+    emailInputs.forEach(input => {
+        if (input.value && !isValidEmail(input.value)) {
+            errors.push(`Invalid email: ${input.value}`);
+        }
+    });
+    
+    return errors;
+}
+
+// Enhanced form submission with validation
+document.getElementById('pageBuilderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const errors = validateForm();
+    if (errors.length > 0) {
+        alert('Please fix the following errors:\n\n' + errors.join('\n'));
+        return;
+    }
+    
+    // Rest of the submission logic...
+});
+
+// SEO helpers
+function updateSEOPreview() {
+    const title = document.getElementById('title').value;
+    const metaTitle = document.querySelector('input[name="seo[metaTitle]"]').value || title;
+    const metaDescription = document.querySelector('textarea[name="seo[metaDescription]"]').value;
+    
+    // Update a preview of how it would look in search results
+    // This could be displayed in a dedicated preview area
+}
+
+// Live character count for meta descriptions
+document.querySelector('textarea[name="seo[metaDescription]"]')?.addEventListener('input', function() {
+    const maxLength = 160;
+    const currentLength = this.value.length;
+    const remaining = maxLength - currentLength;
+    
+    // Find or create character counter
+    let counter = this.parentNode.querySelector('.char-counter');
+    if (!counter) {
+        counter = document.createElement('small');
+        counter.className = 'char-counter';
+        counter.style.display = 'block';
+        counter.style.marginTop = '5px';
+        this.parentNode.appendChild(counter);
+    }
+    
+    counter.textContent = `${currentLength}/${maxLength} characters`;
+    counter.style.color = remaining < 0 ? '#dc3545' : '#6c757d';
+});
+
+// Responsive design helpers
+function checkMobileView() {
+    const isMobile = window.innerWidth <= 768;
+    const previewPanel = document.getElementById('previewPanel');
+    
+    if (isMobile && previewPanel.classList.contains('active')) {
+        previewPanel.style.width = '100%';
+    } else {
+        previewPanel.style.width = '400px';
+    }
+}
+
+window.addEventListener('resize', checkMobileView);
+
+// Export/Import functionality (for advanced users)
+function exportPageData() {
+    const formData = new FormData(document.getElementById('pageBuilderForm'));
+    const pageData = {};
+    
+    for (let [key, value] of formData.entries()) {
+        pageData[key] = value;
+    }
+    
+    const dataStr = JSON.stringify(pageData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `page-${pageData.slug || 'export'}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function importPageData(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const pageData = JSON.parse(e.target.result);
+            
+            // Populate form with imported data
+            Object.keys(pageData).forEach(key => {
+                const input = document.querySelector(`[name="${key}"]`);
+                if (input) {
+                    input.value = pageData[key];
+                }
+            });
+            
+            alert('Page data imported successfully!');
+        } catch (error) {
+            alert('Error importing page data. Please check the file format.');
+        }
+    };
+    reader.readAsText(file);
+}
+
+// Add import/export buttons to the form actions if needed
+function addImportExportButtons() {
+    const formActions = document.querySelector('.form-actions');
+    
+    const exportBtn = document.createElement('button');
+    exportBtn.type = 'button';
+    exportBtn.className = 'btn-secondary';
+    exportBtn.innerHTML = '<i class="fas fa-download"></i> Export';
+    exportBtn.onclick = exportPageData;
+    
+    const importBtn = document.createElement('button');
+    importBtn.type = 'button';
+    importBtn.className = 'btn-secondary';
+    importBtn.innerHTML = '<i class="fas fa-upload"></i> Import';
+    importBtn.onclick = function() {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.json';
+        fileInput.onchange = function(e) {
+            if (e.target.files[0]) {
+                importPageData(e.target.files[0]);
+            }
+        };
+        fileInput.click();
+    };
+    
+    // Insert before the create button
+    const createBtn = formActions.querySelector('.btn-primary');
+    formActions.insertBefore(exportBtn, createBtn);
+    formActions.insertBefore(importBtn, createBtn);
+    exportBtn.style.marginRight = '10px';
+    importBtn.style.marginRight = '10px';
+}
+</script>

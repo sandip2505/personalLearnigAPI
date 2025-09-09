@@ -1,0 +1,529 @@
+<%- contentFor('extra_css') %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .image-preview {
+            max-width: 300px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px dashed #dee2e6;
+            padding: 10px;
+        }
+
+        .form-floating label {
+            color: #6c757d;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-group .btn {
+            min-width: 120px;
+        }
+
+        .view-mode {
+            display: block;
+        }
+
+        .edit-mode {
+            display: none;
+        }
+
+        .info-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #6c757d;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .slider-image-display {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+    <%- contentFor('content') %>
+
+        <div class="container-xxl mt-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-image me-2"></i>Slider Details
+                                </h4>
+                                <a href="/sliders" class="btn btn-light btn-sm">
+                                    <i class="fas fa-arrow-left me-1"></i>Back to List
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- View Mode -->
+                            <div id="viewMode" class="view-mode">
+                                <div class="row">
+                                    <div class="col-md-12 mb-4">
+                                        <div class="text-center">
+                                            <img src="/<%= slider.imageUrl %>" alt="<%= slider.title %>"
+                                                class="slider-image-display" id="displayImage" onerror="this.src=''">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="info" name="info"
+                                                value="<%= slider.info %>" placeholder="Info" required>
+                                            <label for="info">Info *</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="titleCategory"
+                                                name="titleCategory" value="<%= slider.titleCategory %>"
+                                                placeholder="Title Category" required>
+                                            <label for="titleCategory">Title Category *</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-item">
+                                            <div class="info-label">Title</div>
+                                            <div class="info-value" id="displayTitle">
+                                                <%= slider.title %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-item">
+                                            <div class="info-label">Status</div>
+                                            <div class="info-value">
+                                                <span
+                                                    class="status-badge <%= slider.isActive ? 'status-active' : 'status-inactive' %>"
+                                                    id="displayStatus">
+                                                    <i
+                                                        class="fas <%= slider.isActive ? 'fa-check' : 'fa-times' %> me-1"></i>
+                                                    <%= slider.isActive ? 'Active' : 'Inactive' %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-item">
+                                            <div class="info-label">Display Order</div>
+                                            <div class="info-value" id="displayOrder">
+                                                <%= slider.order %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-item">
+                                            <div class="info-label">Link URL</div>
+                                            <div class="info-value" id="displayLink">
+                                                <% if (slider.link) { %>
+                                                    <a href="<%= slider.link %>" target="_blank" class="text-primary">
+                                                        <i class="fas fa-external-link-alt me-1"></i>
+                                                        <%= slider.link %>
+                                                    </a>
+                                                    <% } else { %>
+                                                        <span class="text-muted">No link provided</span>
+                                                        <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="info-item">
+                                    <div class="info-label">Description</div>
+                                    <div class="info-value" id="displayDescription">
+                                        <%= slider.description %>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-outline-secondary"
+                                        onclick="window.location.href='/sliders'">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                                    </button>
+
+                                    <div>
+                                        <button type="button" class="btn btn-outline-danger me-2" id="deleteBtn">
+                                            <i class="fas fa-trash me-2"></i>Delete
+                                        </button>
+
+                                        <button type="button" class="btn btn-primary" id="editBtn">
+                                            <i class="fas fa-edit me-2"></i>Edit Slider
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Edit Mode -->
+                            <div id="editMode" class="edit-mode">
+                                <form id="editSliderForm" enctype="multipart/form-data">
+                                    <input type="hidden" id="sliderId" value="<%= slider._id %>">
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" id="title" name="title"
+                                                    value="<%= slider.title %>" placeholder="Slider Title" required>
+                                                <label for="title">Slider Title *</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-floating">
+                                                <input type="url" class="form-control" id="link" name="link"
+                                                    value="<%= slider.link || '' %>" placeholder="URL">
+                                                <label for="link">Link URL</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="description" name="description"
+                                                placeholder="Slider Description" style="height: 100px"
+                                                required><%= slider.description %></textarea>
+                                            <label for="description">Description *</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-floating">
+                                                <input type="number" class="form-control" id="order" name="order"
+                                                    value="<%= slider.order %>" min="1" placeholder="Display Order"
+                                                    required>
+                                                <label for="order">Display Order *</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Status *</label>
+                                            <div class="btn-group w-100" role="group">
+                                                <input type="radio" class="btn-check" name="isActive" id="statusActive"
+                                                    value="true" <%=slider.isActive ? 'checked' : '' %>>
+                                                <label class="btn btn-outline-success" for="statusActive">
+                                                    <i class="fas fa-check me-1"></i>Active
+                                                </label>
+
+                                                <input type="radio" class="btn-check" name="isActive"
+                                                    id="statusInactive" value="false" <%=!slider.isActive ? 'checked'
+                                                    : '' %>>
+                                                <label class="btn btn-outline-danger" for="statusInactive">
+                                                    <i class="fas fa-times me-1"></i>Inactive
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Current Image</label>
+                                        <div class="mb-3">
+                                            <img src="/<%= slider.imageUrl %>" alt="<%= slider.title %>"
+                                                class="image-preview" id="currentImage" onerror="this.src=''">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="imageFile" class="form-label">Update Image</label>
+                                            <input type="file" class="form-control" id="imageFile" name="image"
+                                                accept="image/*">
+                                            <div class="form-text">Leave empty to keep current image. Supported formats:
+                                                JPG, JPEG, PNG, GIF (Max: 5MB)</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between">
+                                        <button type="button" class="btn btn-outline-secondary" id="cancelBtn">
+                                            <i class="fas fa-times me-2"></i>Cancel
+                                        </button>
+
+                                        <button type="submit" class="btn btn-primary" id="updateBtn">
+                                            <i class="fas fa-save me-2"></i>Update Slider
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this slider "<%= slider.title %>"?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- contentFor('extra_javascript') %>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script src="https://code.jquery.com/jquery-3.7.1.js"
+                integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+            <script>
+                $(document).ready(function () {
+                    // Toggle between view and edit modes
+                    $('#editBtn').click(function () {
+                        console.log("edit button clicked");
+                        $('#viewMode').hide();
+                        $('#editMode').show();
+                    });
+
+                    $('#cancelBtn').click(function () {
+                        $('#editMode').hide();
+                        $('#viewMode').show();
+                        // Reset form to original values
+                        resetForm();
+                    });
+
+                    // Image file preview
+                    $('#imageFile').on('change', function () {
+                        const file = this.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                $('#currentImage').attr('src', e.target.result);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+
+                    // Form submission
+                    $('#editSliderForm').on('submit', function (e) {
+                        e.preventDefault();
+
+                        const formData = new FormData();
+                        formData.append('title', $('#title').val().trim());
+                        formData.append('description', $('#description').val().trim());
+                        formData.append('link', $('#link').val().trim());
+                        formData.append('order', parseInt($('#order').val()));
+                        formData.append('isActive', $('input[name="isActive"]:checked').val() === 'true');
+
+                        // Add image file if selected
+                        const imageFile = $('#imageFile')[0].files[0];
+                        if (imageFile) {
+                            formData.append('image', imageFile);
+                        }
+
+                        // Validation
+                        if (!$('#title').val().trim() || !$('#description').val().trim()) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Error',
+                                text: 'Please fill in all required fields.'
+                            });
+                            return;
+                        }
+
+                        updateSlider(formData);
+                    });
+
+                    // Delete button click
+                    $('#deleteBtn').click(function () {
+                        $('#deleteModal').modal('show');
+                    });
+
+                    // Confirm delete
+                    $('#confirmDelete').click(function () {
+                        deleteSlider();
+                    });
+
+                    // Reset form function
+                    function resetForm() {
+                        $('#title').val('<%= slider.title %>');
+                        $('#description').val('<%= slider.description %>');
+                        $('#link').val('<%= slider.link || "" %>');
+                        $('#order').val('<%= slider.order %>');
+                        $('input[name="isActive"][value="<%= slider.isActive %>"]').prop('checked', true);
+                        $('#imageFile').val('');
+                        $('#currentImage').attr('src', '/<%= slider.imageUrl %>');
+                    }
+
+                    // Update slider function
+                    function updateSlider(formData) {
+                        const sliderId = $('#sliderId').val();
+
+                        $.ajax({
+                            url: `/api/updateSlider/${sliderId}`,
+                            type: 'PUT',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            beforeSend: function () {
+                                $('#updateBtn').prop('disabled', true)
+                                    .html('<i class="fas fa-spinner fa-spin me-2"></i>Updating...');
+                            },
+                            success: function (response) {
+                                console.log(response.data);
+                                if (response.status === 'success') {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: 'Slider updated successfully.',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        // Update view mode with new data
+                                        updateViewMode(response.data || {
+                                            title: $('#title').val(),
+                                            description: $('#description').val(),
+                                            link: $('#link').val(),
+                                            order: $('#order').val(),
+                                            isActive: $('input[name="isActive"]:checked').val() === 'true'
+                                        });
+                                        $('#editMode').hide();
+                                        $('#viewMode').show();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: response.message || 'Failed to update slider.'
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                let errorMessage = 'An error occurred while updating the slider.';
+
+                                if (xhr.responseJSON && xhr.responseJSON.message) {
+                                    errorMessage = xhr.responseJSON.message;
+                                }
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: errorMessage
+                                });
+                                console.error('Update error:', error);
+                            },
+                            complete: function () {
+                                $('#updateBtn').prop('disabled', false)
+                                    .html('<i class="fas fa-save me-2"></i>Update Slider');
+                            }
+                        });
+                    }
+
+                    // Delete slider function
+                    function deleteSlider() {
+                        const sliderId = $('#sliderId').val();
+
+                        $.ajax({
+                            url: `/api/deleteSlider/${sliderId}`,
+                            type: 'DELETE',
+                            beforeSend: function () {
+                                $('#confirmDelete').prop('disabled', true)
+                                    .html('<i class="fas fa-spinner fa-spin me-2"></i>Deleting...');
+                            },
+                            success: function (response) {
+                                $('#deleteModal').modal('hide');
+
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Deleted!',
+                                        text: 'Slider has been deleted successfully.',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        window.location.href = '/sliders';
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: response.message || 'Failed to delete slider.'
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                $('#deleteModal').modal('hide');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'An error occurred while deleting the slider.'
+                                });
+                                console.error('Delete error:', error);
+                            },
+                            complete: function () {
+                                $('#confirmDelete').prop('disabled', false).html('Delete');
+                            }
+                        });
+                    }
+
+                    // Update view mode with new data
+                    function updateViewMode(data) {
+                        $('#displayTitle').text(data.title);
+                        $('#displayDescription').text(data.description);
+                        $('#displayOrder').text(data.order);
+
+                        if (data.link) {
+                            $('#displayLink').html(`<a href="${data.link}" target="_blank" class="text-primary"><i class="fas fa-external-link-alt me-1"></i>${data.link}</a>`);
+                        } else {
+                            $('#displayLink').html('<span class="text-muted">No link provided</span>');
+                        }
+
+                        const statusClass = data.isActive ? 'status-active' : 'status-inactive';
+                        const statusIcon = data.isActive ? 'fa-check' : 'fa-times';
+                        const statusText = data.isActive ? 'Active' : 'Inactive';
+
+                        $('#displayStatus').html(`<span class="status-badge ${statusClass}"><i class="fas ${statusIcon} me-1"></i>${statusText}</span>`);
+
+                        // Update images if new image was uploaded
+                        if (data.imageUrl) {
+                            $('#displayImage').attr('src', '/' + data.imageUrl);
+                        }
+                    }
+                });
+            </script>

@@ -1,0 +1,42 @@
+<%- contentFor('extra_css') %>
+
+<%- contentFor('content') %>
+
+<div class="container-xxl mt-4">
+    <form method="POST">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="permissionName" class="form-label">Permission Name</label>
+                <input type="text" class="form-control" id="permissionName" name="name" required placeholder="e.g. View Grades" value="<%= permission.name %>">
+            </div>
+            <div class="col-md-6">
+                <label for="permissionDescription" class="form-label">Permission Description</label>
+                <input type="text" class="form-control" id="permissionDescription" name="description" placeholder="Describe the permission" value="<%= permission.description %>">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Permission</button>
+        <button type="button" class="btn btn-danger" onclick="deletePermission('<%= permission._id %>')">Delete Permission</button>
+    </form>
+</div>
+
+<script>
+  function deletePermission(permissionId) {
+    if (confirm("Are you sure you want to delete this permission?")) {
+      fetch(`/api/deletePermission/${permissionId}`, {
+        method: 'DELETE'
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = '/permissions';
+        } else {
+          alert("Failed to delete permission.");
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  }
+</script>
+
+
+<%- contentFor('extra_javascript') %>

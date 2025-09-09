@@ -1,0 +1,72 @@
+<%- contentFor('extra_css') %>
+
+    <link href="/libs/simple-datatables/style.css" rel="stylesheet" type="text/css" />
+
+    <%- contentFor('content') %>
+
+        <div class="container-xxl">
+
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h4 class="card-title">Footer Details</h4>
+                                </div>
+                            </div>
+                            <a href="/footer/add" class="btn btn-primary">Add Footer</a>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="table-responsive">
+                                <table class="table datatable" id="datatable_1">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 16px;">
+                                                <div class="form-check mb-0 ms-n1">
+                                                    <input type="checkbox" class="form-check-input" name="select-all"
+                                                        id="select-all">
+                                                </div>
+                                            </th>
+                                            <th>Name</th>
+                                            <th>Status</th>
+                                            <th>Section</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (footer.length===0) { %>
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted">No data found</td>
+                                            </tr>
+                                            <% } else { %>
+                                                <% for (let i=0; i < footer.length; i++) { %>
+                                                    <tr>
+                                                        <td>
+                                                            <%= i + 1 %>
+                                                        </td>
+                                                        <td>
+                                                            <%= footer[i].name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= footer[i].visible === true ? 'Published' : 'Draft' %>
+                                                        </td>
+                                                        <td><a href="/edit-footer/<%= footer[i]._id %>">View Footer</a>
+                                                        </td>
+                                                    </tr>
+                                                    <% } %>
+                                                        <% } %>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div><!--end card-body-->
+                    </div><!--end card-->
+                </div> <!--end col-->
+            </div><!--end row-->
+
+        </div><!-- container -->
+
+        <%- contentFor('extra_javascript') %>
+
+            <script src="/libs/simple-datatables/umd/simple-datatables.js"></script>
+            <script src="/js/pages/datatable.init.js"></script>

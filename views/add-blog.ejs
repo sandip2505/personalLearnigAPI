@@ -1,0 +1,190 @@
+<%- contentFor('extra_css') %>
+
+<%- contentFor('content') %>
+
+<div class="container-xxl mt-4">
+  <form method="POST" enctype="multipart/form-data">
+    <!-- Hidden field for publish status -->
+    <input type="hidden" id="isPublished" name="isPublished" value="false">
+    
+    <!-- Basic Information -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" id="title" name="title" placeholder="e.g. My Amazing Blog Post" required oninput="generateSlug()">
+      </div>
+      <div class="col-md-6">
+        <label for="slug" class="form-label">Slug <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" id="slug" name="slug" placeholder="e.g. my-amazing-blog-post" required>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
+        <textarea class="form-control" id="content" name="content" placeholder="Write your blog content here..."></textarea>
+      </div>
+    </div>
+
+    <!-- Featured Image -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="featuredImage" class="form-label">Featured Image</label>
+        <input type="file" class="form-control" id="featuredImage" name="featuredImage" accept="image/*">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Categories</label>
+        <div class="row">
+          <% if (typeof categories !== 'undefined' && categories.length > 0) { %>
+            <% categories.forEach(category => { %>
+              <div class="col-md-6 mb-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="category_<%= category._id %>" name="categories" value="<%= category._id %>">
+                  <label class="form-check-label" for="category_<%= category._id %>">
+                    <%= category.name %>
+                  </label>
+                </div>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <div class="col-12">
+              <p class="text-muted">No categories available. Please create categories first.</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <h5 class="mt-4">SEO Metadata</h5>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="metaTitle" class="form-label">Meta Title</label>
+        <input type="text" class="form-control" id="metaTitle" name="metaTitle" placeholder="SEO title for search engines">
+        <small class="form-text text-muted">Leave empty to use main title</small>
+      </div>
+      <div class="col-md-6">
+        <label for="metaDescription" class="form-label">Meta Description</label>
+        <textarea class="form-control" id="metaDescription" name="metaDescription" rows="2" placeholder="SEO description for search engines"></textarea>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="metaKeywords" class="form-label">Meta Keywords</label>
+        <input type="text" class="form-control" id="metaKeywords" name="metaKeywords" placeholder="SEO keywords (comma-separated)">
+      </div>
+      <div class="col-md-6">
+        <label for="canonicalUrl" class="form-label">Canonical URL</label>
+        <input type="url" class="form-control" id="canonicalUrl" name="canonicalUrl" placeholder="https://example.com/canonical-url">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <button type="submit" class="btn btn-success me-2" onclick="setPublishStatus(true)">
+          <i class="fas fa-paper-plane"></i> Publish
+        </button>
+        <button type="submit" class="btn btn-secondary me-2" onclick="setPublishStatus(false)">
+          <i class="fas fa-save"></i> Save as Draft
+        </button>
+        <button type="button" class="btn btn-outline-secondary" onclick="window.history.back()">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor5/39.0.1/ckeditor.min.js"></script>
+<script>
+  let editor;
+
+  // Initialize CKEditor
+  ClassicEditor
+    .create(document.querySelector('#content'), {
+      toolbar: {
+        items: [
+          'heading', '|',
+          'bold', 'italic', 'underline', 'strikethrough', '|',
+          'link', 'bulletedList', 'numberedList', '|',
+          'outdent', 'indent', '|',
+          'imageUpload', 'blockQuote', 'insertTable', '|',
+          'undo', 'redo', '|',
+          'alignment', 'fontColor', 'fontBackgroundColor', '|',
+          'code', 'codeBlock', '|',
+          'sourceEditing'
+        ]
+      },
+      language: 'en',
+      image: {
+        toolbar: [
+          'imageTextAlternative',
+          'imageStyle:inline',
+          'imageStyle:block',
+          'imageStyle:side',
+          'linkImage'
+        ]
+      },
+      table: {
+        contentToolbar: [
+          'tableColumn',
+          'tableRow',
+          'mergeTableCells'
+        ]
+      }
+    })
+    .then(editorInstance => {
+      editor = editorInstance;
+      
+      // Sync CKEditor content with form on submit
+      document.querySelector('form').addEventListener('submit', function(e) {
+        const content = editor.getData();
+        document.querySelector('#content').value = content;
+        
+        // Custom validation for CKEditor content
+        if (!content.trim()) {
+          e.preventDefault();
+          alert('Content is required. Please write some content for your blog post.');
+          editor.focus();
+          return false;
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error initializing CKEditor:', error);
+    });
+
+  function generateSlug() {
+    const title = document.getElementById('title').value;
+    const slug = title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    document.getElementById('slug').value = slug;
+  }
+
+  function setPublishStatus(isPublished) {
+    document.getElementById('isPublished').value = isPublished;
+  }
+
+  // Auto-populate meta fields if they're empty
+  document.getElementById('title').addEventListener('blur', function() {
+    const title = this.value;
+    const metaTitle = document.getElementById('metaTitle');
+    
+    if (!metaTitle.value) {
+      metaTitle.value = title;
+    }
+  });
+
+  // Handle meta keywords formatting
+  document.getElementById('metaKeywords').addEventListener('blur', function() {
+    let keywords = this.value.split(',').map(keyword => keyword.trim()).filter(keyword => keyword);
+    this.value = keywords.join(', ');
+  });
+</script>
+
+<%- contentFor('extra_javascript') %>

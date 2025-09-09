@@ -19,15 +19,17 @@
                                 </div>
                             </div>
                             <div class="card-body pt-0">                                    
-                                <form class="my-4 form" action="/">            
+                                <form class="my-4 form"  method="POST">            
                                     <div class="form-group mb-2">
-                                        <label class="form-label" for="username">Username</label>
-                                        <input type="email" class="form-control" id="username" name="username" value="user@demo.com" placeholder="Enter username">                               
+                                       
+
+                                        <label class="form-label" for="email">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" value="sandip@example.com" placeholder="Enter Email">                               
                                     </div><!--end form-group--> 
         
                                     <div class="form-group">
                                         <label class="form-label" for="userpassword">Password</label>                                            
-                                        <input type="password" class="form-control" name="password" value="password" id="userpassword" placeholder="Enter password">                            
+                                        <input type="password" class="form-control" name="password" value="123456" id="userpassword" placeholder="Enter password">                            
                                     </div><!--end form-group--> 
         
                                     <div class="form-group row mt-3">
@@ -75,17 +77,3 @@
 </div><!-- container -->
 
 <%- contentFor('extra_javascript') %>
-<script>
-    document.querySelector(".form").addEventListener("submit", (event) => {
-      event.preventDefault();
-  
-      let username = document.getElementById("username").value;
-      let pass = document.getElementById("userpassword").value;
-      if (username == "user@demo.com" && pass == "password") {
-        localStorage.setItem("rizz_user", username);
-        window.location.href = "/";
-      } else {
-        document.getElementById("error").innerHTML = "*Invalid Email or Password";
-      }
-});
-</script>
