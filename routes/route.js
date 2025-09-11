@@ -1,13 +1,8 @@
 const express = require('express');
 const route = express.Router();
-const pageController = require('../controller/pageController');
-const BlogController = require('../controller/BlogController');
-const SliderController = require('../controller/SliderController');
-const FooterController = require('../controller/FooterController');
-const MediaController = require('../controller/MediaController');
-const HeaderController = require('../controller/HeaderController');
 const UserController = require('../controller/UserController');
 const RolePermissionController = require('../controller/RolePermissionController');
+const CategoryController = require('../controller/CategoryController');
 const {requireAuth, requireAuthAPI, redirectIfAuthenticated} = require('../middlewere/auth');
 
 
@@ -16,54 +11,6 @@ route.get('/login', redirectIfAuthenticated, UserController.login);
 route.post('/login', redirectIfAuthenticated, UserController.verifyLogin);
 route.get('/logout', UserController.logout);
 route.get('/', requireAuth, UserController.dashboard);
-route.get('/pages', pageController.getPage);
-route.get('/pages/add', pageController.addPage);
-// route.get('/add-page', pageController.addPage);
-route.post('/add-page', pageController.addpageData);
-route.get('/set-page-section', pageController.setPageSection);
-route.get('/sections', pageController.addsection);
-route.get('/add-page-section', pageController.addPagesection);
-route.post('/add-page-section', pageController.createPagesection);
-route.get('/edit-section/:id', pageController.editSection);
-route.post('/edit-section/:id', pageController.updateSection);
-
-route.get('/page-section', pageController.pageSection);
-
-route.get('/add-section', pageController.addsection);
-route.get('/add-page-section/:id', pageController.getAddPageSection);
-route.post('/set-page-section', pageController.setAddPageSection);
-route.get('/add-new-page', pageController.newPageSection);
-// blog routes
-route.get('/blogs', BlogController.getBlogs);
-route.get('/blogs/:id', BlogController.getBlogById);
-route.get('/blog/add', BlogController.addBlog);
-route.post('/blog/add', BlogController.createBlog);
-route.get('/edit-blog/:id', BlogController.editBlog);
-route.post('/edit-blog/:id', BlogController.updateBlog);  
-
-// Slider routes
-route.get('/sliders', SliderController.getSliders);
-route.get('/sliders/:id', SliderController.getSliderById);
-route.get('/slider/add', SliderController.addSlider);
-route.post('/slider/add', SliderController.createSlider);
-
-// Define route for footer
-route.get('/footer/add', FooterController.addFooter);
-route.post('/footer/add', FooterController.createFooter);
-route.get('/footers', FooterController.getFooter);
-route.get('/edit-footer/:id', FooterController.editFooter);
-route.post('/edit-footer/:id', FooterController.updateFooter);
-
-// Define route for header
-route.get('/header/add', HeaderController.addHeader);
-route.post('/header/add', HeaderController.createHeader);
-route.get('/headers', HeaderController.getHeader);
-route.get('/edit-header/:id', HeaderController.editHeader);
-route.post('/edit-header/:id', HeaderController.updateHeader);
-
-route.get('/media', MediaController.getMedia);
-
-
 
 //  define routes for user
 route.get('/users', requireAuth, UserController.getUsers);
@@ -90,7 +37,13 @@ route.get('/role-permission/:id', RolePermissionController.getRolePermissions);
 route.post('/role-permission/:id', RolePermissionController.createRolePermission);
 
 
-
+// define route for Category
+route.get('/categories', requireAuth, CategoryController.getCategories);
+route.get('/category/add', requireAuth, CategoryController.addCategory);
+route.post('/category/add', requireAuth, CategoryController.createCategory);
+route.get('/edit-category/:id', requireAuth, CategoryController.editCategory);
+route.post('/edit-category/:id', requireAuth, CategoryController.updateCategory);
+route.get('/delete-category/:id', requireAuth, CategoryController.deleteCategory);
 
 
 

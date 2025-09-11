@@ -1,0 +1,29 @@
+<%- contentFor('extra_css') %>
+
+<%- contentFor('content') %>
+
+<div class="container-xxl mt-4">
+    <form method="POST">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="categoryName" class="form-label">Category Name</label>
+                <input type="text" class="form-control" id="categoryName" name="name" required placeholder="e.g. Editor">
+            </div>
+            <div class="col-md-6">
+                <label for="parentCategory" class="form-label">Parent Category</label>
+                <select class="form-control" id="parentCategory" name="parentId">
+                    <option value="">Select parent category</option>
+                    <% if (categories && categories.length > 0) { %>
+                        <% categories.forEach(function(category) { %>
+                            <option value="<%= category._id %>"><%= category.name %></option>
+                        <% }); %>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Category</button>
+    </form>
+</div>
+
+<%- contentFor('extra_javascript') %>

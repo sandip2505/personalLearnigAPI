@@ -1,81 +1,84 @@
-const category = require('../model/Category');
+const categoryModel = require('../model/Category');
 
 const CategoryController = {};
+
+// Create a new category
+CategoryController.createCategory = async (req, res) => {
+    try {
+        const { name, parentId } = req.body;
+        const newCategory = new categoryModel({ name, parentId });
+        await newCategory.save();
+        res.status(201).json(newCategory);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 // Get all categories
 CategoryController.getCategories = async (req, res) => {
     try {
-        const categories = await category.find();
-        res.status(200).json(categories);
+        const categories = await categoryModel
+            .find()
+            .populate("parentId", "name"); 
+
+        const formattedCategories = categories.map(cat => ({
+            _id: cat._id,
+            name: cat.name,
+            parentId: cat.parentId?._id || null,
+            parentCategoryName: cat.parentId?.name || null,
+            createdAt: cat.createdAt,
+            updatedAt: cat.updatedAt
+        }));
+
+        res.status(200).json(formattedCategories);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching categories', error });
+        res.status(500).json({ message: error.message });
     }
-}
-// Create a new category
-CategoryController.createCategory = async (req, res) => {
+};
+
+
+// Get a single category by ID
+CategoryController.getCategoryById = async (req, res) => {
     try {
-        const { name, slug, description, metaTitle, metaDescription, metaKeywords } = req.body;
-        const newCategory = new category({
-            name,
-            slug,
-            description,
-            metaTitle,
-            metaDescription,
-            metaKeywords,
-        });
-        await newCategory.save();
-        res.status(201).json(newCategory);
-    } catch (error) {
-        res.status(500).json({ message: 'Error creating category', error });
-    }
-}
-// Edit a category
-CategoryController.editCategory = async (req, res) => {
-    try {
-        const categoryId = req.params.id;
-        const categoryData = await category.findById(categoryId);
-        if (!categoryData) {
+        const category = await categoryModel.findById(req.params.id).populate('parentId', 'name');
+        if (!category) {
             return res.status(404).json({ message: 'Category not found' });
         }
-        res.status(200).json(categoryData);
+        res.status(200).json(category);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching category', error });
+        res.status(500).json({ message: error.message });
     }
-}
+};
+
 // Update a category
 CategoryController.updateCategory = async (req, res) => {
     try {
-        const categoryId = req.params.id;
-        const { name, slug, description, metaTitle, metaDescription, metaKeywords, canonicalUrl, image } = req.body;
-        const updatedCategory = await category.findByIdAndUpdate(categoryId, {
-            name,
-            slug,
-            description,
-            metaTitle,
-            metaDescription,
-            metaKeywords,
-            canonicalUrl,
-            image
-        }, { new: true });
+        const { name, parentId } = req.body;
+        const updatedCategory = await categoryModel.findByIdAndUpdate(
+            req.params.id,
+            { name, parentId },
+            { new: true }
+        );
         if (!updatedCategory) {
             return res.status(404).json({ message: 'Category not found' });
         }
         res.status(200).json(updatedCategory);
     } catch (error) {
-        res.status(500).json({ message: 'Error updating category', error });
+        res.status(500).json({ message: error.message });
     }
-}
+};
+
 // Delete a category
 CategoryController.deleteCategory = async (req, res) => {
     try {
-        const categoryId = req.params.id;
-        const deletedCategory = await category.findByIdAndDelete(categoryId);
+        const deletedCategory = await categoryModel.findByIdAndDelete(req.params.id);
         if (!deletedCategory) {
             return res.status(404).json({ message: 'Category not found' });
         }
         res.status(200).json({ message: 'Category deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting category', error });
+        res.status(500).json({ message: error.message });
     }
-}   
+};
+
 module.exports = CategoryController;

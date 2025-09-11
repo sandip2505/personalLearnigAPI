@@ -1,47 +1,17 @@
 const mongoose = require('mongoose');
 
-const categorySchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      unique: true,
+const categorySchema = new mongoose.Schema({
+    name: { 
+        type: String, 
+        required: true 
     },
-    slug: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-      unique: true,
-    },
-    description: {
-      type: String,
-      trim: true,
-    },
+    parentId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Category", 
+        default: null 
+    }
+}, { 
+    timestamps: true 
+});
 
-    // SEO metadata
-    metaTitle: {
-      type: String,
-      trim: true,
-    },
-    metaDescription: {
-      type: String,
-      trim: true,
-    },
-    metaKeywords: {
-      type: [String],
-      default: [],
-    },
- 
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  {
-    timestamps: true, // createdAt and updatedAt
-  }
-);
-
-module.exports = mongoose.model('Category', categorySchema);
+module.exports = mongoose.model("Category", categorySchema);

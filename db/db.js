@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const mongourl = process.env.MONGODB_URI || 'mongodb://0.0.0.0:27017/schoolapp';
+const dotenv = require('dotenv');
+dotenv.config({ path: "./config.env" });
+const mongourl = process.env.MONGODB_URI || 'mongodb://0.0.0.0:27017/Elearning';
 mongoose.connect(mongourl, {
     useNewUrlParser: true,
     useUnifiedTopology: true
