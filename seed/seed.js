@@ -303,7 +303,7 @@ const seedDatabase = async () => {
     const roles = await seedRoles();
     const permissions = await seedPermissions();
     const users = await seedUsers(roles);
-    
+    seedRolePermissions(roles, permissions);
     displaySummary(roles, permissions, users);
     
     console.log("\n🎉 Database seeding completed successfully!");

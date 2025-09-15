@@ -1,0 +1,109 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Personal Learning API",
+    "version": "1.0.0",
+    "description": "API documentation for users, roles, courses, lessons, quizzes, enrollments, payments, reviews, and notifications. Secured with Bearer JWT."
+  },
+  "servers": [
+    { "url": "/api" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "role_id": { "type": "string" },
+          "profileImage": { "type": "string" }
+        }
+      },
+      "Course": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "category": { "type": "string" },
+          "price": { "type": "number" },
+          "level": { "type": "string", "enum": ["beginner","intermediate","advanced"] },
+          "thumbnail": { "type": "string" },
+          "instructor": { "type": "string" }
+        },
+        "required": ["title","instructor"]
+      },
+      "Lesson": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "course": { "type": "string" },
+          "title": { "type": "string" },
+          "contentType": { "type": "string" },
+          "contentUrl": { "type": "string" },
+          "orderIndex": { "type": "integer" },
+          "duration": { "type": "integer" }
+        }
+      },
+      "Quiz": { "type": "object", "properties": {"_id": {"type":"string"},"course": {"type":"string"},"title": {"type":"string"},"description": {"type":"string"}} },
+      "Question": { "type": "object", "properties": {"_id": {"type":"string"},"quiz": {"type":"string"},"questionText": {"type":"string"},"questionType": {"type":"string"},"options": {"type":"array","items":{"type":"string"}},"correctAnswer": {"nullable": true}} },
+      "QuizResult": { "type": "object", "properties": {"_id": {"type":"string"},"user": {"type":"string"},"quiz": {"type":"string"},"score": {"type":"number"},"submittedAt": {"type":"string","format":"date-time"}} },
+      "Enrollment": { "type": "object", "properties": {"_id": {"type":"string"},"user": {"type":"string"},"course": {"type":"string"},"progress": {"type":"number"}} },
+      "Payment": { "type": "object", "properties": {"_id": {"type":"string"},"user": {"type":"string"},"course": {"type":"string"},"amount": {"type":"number"},"paymentStatus": {"type":"string"},"transactionId": {"type":"string"}} },
+      "Review": { "type": "object", "properties": {"_id": {"type":"string"},"user": {"type":"string"},"course": {"type":"string"},"rating": {"type":"integer"},"comment": {"type":"string"}} },
+      "Notification": { "type": "object", "properties": {"_id": {"type":"string"},"user": {"type":"string"},"type": {"type":"string"},"title": {"type":"string"},"message": {"type":"string"},"isRead": {"type":"boolean"}} }
+    }
+  },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/login": {
+      "post": {"summary":"User login","requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"email":{"type":"string"},"password":{"type":"string"}},"required":["email","password"]}}}},"responses":{"200":{"description":"JWT issued"}}}
+    },
+    "/users": {"get": {"summary": "List users","responses": {"200": {"description": "OK","content": {"application/json": {"schema": {"type": "array","items": {"$ref": "#/components/schemas/User"}}}}}}}},
+    "/courses": {
+      "get": {"summary": "List courses","responses": {"200": {"description": "OK","content": {"application/json": {"schema": {"type":"array","items":{"$ref":"#/components/schemas/Course"}}}}}}},
+      "post": {"summary": "Create course","requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Course"}}}},"responses": {"201": {"description": "Created"}}}
+    },
+    "/courses/{id}": {
+      "get": {"summary": "Get course","parameters": [{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"responses": {"200": {"description": "OK"},"404":{"description":"Not found"}}},
+      "put": {"summary": "Update course","parameters": [{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/Course"}}}},"responses": {"200": {"description": "Updated"}}},
+      "delete": {"summary": "Delete course","parameters": [{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"responses": {"200": {"description": "Deleted"}}}
+    },
+    "/courses/{courseId}/lessons": {
+      "get": {"summary":"List lessons","parameters":[{"name":"courseId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Lesson"}}}}}}},
+      "post": {"summary":"Create lesson","parameters":[{"name":"courseId","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Lesson"}}}},"responses":{"201":{"description":"Created"}}}
+    },
+    "/lessons/{id}": {
+      "put": {"summary":"Update lesson","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Lesson"}}}},"responses":{"200":{"description":"Updated"}}},
+      "delete": {"summary":"Delete lesson","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Deleted"}}}
+    },
+    "/quizzes": {"get": {"summary":"List quizzes","responses":{"200":{"description":"OK"}}}, "post": {"summary":"Create quiz","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Quiz"}}}},"responses":{"201":{"description":"Created"}}}},
+    "/quizzes/{id}": {"get": {"summary":"Get quiz","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK"}}}},
+    "/quizzes/{quizId}/questions": {"get": {"summary":"List questions","parameters":[{"name":"quizId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK"}}},"post": {"summary":"Create question","parameters":[{"name":"quizId","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Question"}}}},"responses":{"201":{"description":"Created"}}}},
+    "/questions/{id}": {"put": {"summary":"Update question","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Updated"}}},"delete": {"summary":"Delete question","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Deleted"}}}},
+    "/quizzes/{quizId}/submit": {"post": {"summary":"Submit quiz result","parameters":[{"name":"quizId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"201":{"description":"Recorded"}}}},
+    "/quizzes/{quizId}/results": {"get": {"summary":"Quiz results","parameters":[{"name":"quizId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK"}}}},
+    "/enrollments": {"post": {"summary":"Enroll user","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Enrollment"}}}},"responses":{"201":{"description":"Created"}}}},
+    "/courses/{courseId}/enrollments": {"get": {"summary":"List enrollments by course","parameters":[{"name":"courseId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK"}}}},
+    "/users/{userId}/enrollments": {"get": {"summary":"List enrollments by user","parameters":[{"name":"userId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK"}}}},
+    "/payments": {"post": {"summary":"Create payment","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Payment"}}}},"responses":{"201":{"description":"Created"}}}},
+    "/courses/{courseId}/payments": {"get": {"summary":"Payments by course","parameters":[{"name":"courseId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK"}}}},
+    "/users/{userId}/payments": {"get": {"summary":"Payments by user","parameters":[{"name":"userId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK"}}}},
+    "/courses/{courseId}/reviews": {"get": {"summary":"List reviews","parameters":[{"name":"courseId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK"}}],"post": {"summary":"Create review","parameters":[{"name":"courseId","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Review"}}}},"responses":{"201":{"description":"Created"}}}},
+    "/reviews/{id}": {"delete": {"summary":"Delete review","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Deleted"}}}},
+    "/notifications": {"post": {"summary":"Create notification","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Notification"}}}},"responses":{"201":{"description":"Created"}}}},
+    "/users/{userId}/notifications": {"get": {"summary":"List notifications for user","parameters":[{"name":"userId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK"}}}},
+    "/notifications/{id}/read": {"put": {"summary":"Mark notification read","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"OK"}}}}
+  }
+}
+
+

@@ -10,6 +10,8 @@ const dotenv = require('dotenv')
 const jwt = require("jsonwebtoken");
 const mongoose = require('./db/db'); 
 const cors = require('cors'); 
+const swaggerUi = require('swagger-ui-express');
+const fs = require('fs');
 
 const app = express();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -35,6 +37,20 @@ app.use(express.static(path.join(__dirname, 'uploads')));
 
 app.use('/', route);
 app.use('/api', apiRoute);
+
+// Swagger UI
+try {
+  let openapi;
+  try {
+    openapi = require('./docs/openapi.js');
+  } catch (e) {
+    openapi = JSON.parse(fs.readFileSync(path.join(__dirname, 'docs', 'openapi.json'), 'utf8'));
+  }
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapi));
+  console.log('Swagger UI available at /api-docs');
+} catch (e) {
+  console.warn('Swagger not initialized:', e.message);
+}
 
 app.use((err, req, res, next) => {
   let error = { ...err }
