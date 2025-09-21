@@ -1,0 +1,100 @@
+<%- contentFor('extra_css') %>
+
+    <link href="/libs/simple-datatables/style.css" rel="stylesheet" type="text/css" />
+
+    <%- contentFor('content') %>
+
+        <div class="container-xxl">
+
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h4 class="card-title">Notifications</h4>
+                                </div>
+                            </div>
+                            <a href="/notification/add" class="btn btn-primary">Add Notification</a>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="table-responsive">
+                                <table class="table datatable" id="datatable_1">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 16px;">
+                                                <div class="form-check mb-0 ms-n1">
+                                                    <input type="checkbox" class="form-check-input" name="select-all"
+                                                        id="select-all">
+                                                </div>
+                                            </th>
+                                            <th>Title</th>
+                                            <th>Message</th>
+                                            <th>User</th>
+                                            <th>Type</th>
+                                            <th>Read</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (!notifications || notifications.length===0) { %>
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted">No data found</td>
+                                            </tr>
+                                            <% } else { %>
+                                                <% for (let i=0; i < notifications.length; i++) { %>
+                                                    <tr>
+                                                        <td>
+                                                            <%= i + 1 %>
+                                                        </td>
+                                                        <td>
+                                                            <%= notifications[i].title %>
+                                                        </td>
+                                                        <td>
+                                                            <%= notifications[i].message.length> 50 ?
+                                                                notifications[i].message.substring(0, 50) + '...' :
+                                                                notifications[i].message %>
+                                                        </td>
+                                                        <td>
+                                                            <%= notifications[i].userId ? notifications[i].userId.name
+                                                                : 'N/A' %>
+                                                        </td>
+                                                        <td>
+                                                            <%= notifications[i].type || 'N/A' %>
+                                                        </td>
+                                                        <td>
+                                                            <span
+                                                                class="badge <%= notifications[i].isRead ? 'bg-success' : 'bg-warning' %>">
+                                                                <%= notifications[i].isRead ? 'Read' : 'Unread' %>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <%= new
+                                                                Date(notifications[i].createdAt).toLocaleDateString() %>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/edit-notification/<%= notifications[i]._id %>"
+                                                                class="btn btn-sm btn-primary">Edit</a>
+                                                            <a href="/delete-notification/<%= notifications[i]._id %>"
+                                                                class="btn btn-sm btn-danger"
+                                                                onclick="return confirm('Are you sure?')">Delete</a>
+                                                        </td>
+                                                    </tr>
+                                                    <% } %>
+                                                        <% } %>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div><!--end card-body-->
+                    </div><!--end card-->
+                </div> <!--end col-->
+            </div><!--end row-->
+
+        </div><!-- container -->
+
+        <%- contentFor('extra_javascript') %>
+
+            <script src="/libs/simple-datatables/umd/simple-datatables.js"></script>
+            <script src="/js/pages/datatable.init.js"></script>

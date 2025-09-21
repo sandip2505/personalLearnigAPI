@@ -1,0 +1,168 @@
+<%- contentFor('content') %>
+
+    <div class="container-xxl">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Add Course Content</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="/course-content/add" method="POST" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="courseId" class="form-label">Course</label>
+                                        <select class="form-select" id="courseId" name="courseId" required>
+                                            <option value="">Select Course</option>
+                                            <% if (courses && courses.length> 0) { %>
+                                                <% for (let i=0; i < courses.length; i++) { %>
+                                                    <option value="<%= courses[i]._id %>">
+                                                        <%= courses[i].title %>
+                                                    </option>
+                                                    <% } %>
+                                                        <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="type" class="form-label">Content Type</label>
+                                        <select class="form-select" id="type" name="type" required>
+                                            <option value="">Select Type</option>
+                                            <option value="video">Video</option>
+                                            <option value="document">Document</option>
+                                            <option value="text">Text</option>
+                                            <option value="audio">Audio</option>
+                                            <option value="image">Image</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="orderIndex" class="form-label">Order Index</label>
+                                        <input type="number" class="form-control" id="orderIndex" name="orderIndex"
+                                            value="0" min="0">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="duration" class="form-label">Duration (minutes)</label>
+                                        <input type="number" class="form-control" id="duration" name="duration" min="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="contentUrl" class="form-label">Content URL</label>
+                                <div class="input-group">
+                                    <input type="url" class="form-control" id="contentUrl" name="contentUrl"
+                                        placeholder="Select media or enter URL">
+                                    <button type="button" class="btn btn-outline-primary"
+                                        onclick="openMediaSelectionForContent()">
+                                        <i class="fas fa-images"></i> Select Media
+                                    </button>
+                                </div>
+                                <div class="form-text">Select from media library or enter a URL (YouTube, Vimeo, etc.)
+                                </div>
+                                <div id="contentPreview" class="mt-2" style="display: none;">
+                                    <div id="contentPreviewContent"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="contentFile" class="form-label">Or Upload New File</label>
+                                <input type="file" class="form-control" id="contentFile" name="contentFile">
+                                <div class="form-text">Upload a new file for this content item</div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">Create Content</button>
+                                <a href="/course-content" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- contentFor('extra_javascript') %>
+        <script>
+            // Show/hide file upload or URL input based on content type
+            document.getElementById('type').addEventListener('change', function () {
+                const type = this.value;
+                const fileInput = document.getElementById('contentFile');
+                const urlInput = document.getElementById('contentUrl');
+
+                if (type === 'video' || type === 'audio' || type === 'image' || type === 'document') {
+                    fileInput.style.display = 'block';
+                    urlInput.style.display = 'block';
+                    fileInput.required = false;
+                    urlInput.required = false;
+                } else if (type === 'text') {
+                    fileInput.style.display = 'none';
+                    urlInput.style.display = 'block';
+                    fileInput.required = false;
+                    urlInput.required = false;
+                }
+            });
+
+            // Media selection functions
+            function selectContent(mediaId, mediaUrl, mediaType) {
+                document.getElementById('contentUrl').value = mediaUrl;
+                showContentPreview(mediaUrl, mediaType);
+            }
+
+            function openMediaSelectionForContent() {
+                // Set the file type filter based on selected content type
+                const contentType = document.getElementById('type').value;
+                if (contentType && contentType !== '') {
+                    document.getElementById('selectionFileTypeFilter').value = contentType;
+                } else {
+                    document.getElementById('selectionFileTypeFilter').value = 'all';
+                }
+                openMediaSelection(selectContent);
+            }
+
+            function showContentPreview(url, type) {
+                const previewDiv = document.getElementById('contentPreview');
+                const contentDiv = document.getElementById('contentPreviewContent');
+
+                if (type === 'image') {
+                    contentDiv.innerHTML = `<img src="${url}" class="img-thumbnail" style="max-width: 200px; max-height: 150px;" alt="Content preview">`;
+                } else if (type === 'video') {
+                    contentDiv.innerHTML = `<video class="img-thumbnail" style="max-width: 200px; max-height: 150px;" controls><source src="${url}"></video>`;
+                } else if (type === 'audio') {
+                    contentDiv.innerHTML = `<audio class="w-100" controls><source src="${url}"></audio>`;
+                } else {
+                    contentDiv.innerHTML = `<div class="alert alert-info">Selected: ${url}</div>`;
+                }
+
+                previewDiv.style.display = 'block';
+            }
+
+            // Make sure at least one of file or URL is provided
+            document.querySelector('form').addEventListener('submit', function (e) {
+                const fileInput = document.getElementById('contentFile');
+                const urlInput = document.getElementById('contentUrl');
+
+                if (!fileInput.files[0] && !urlInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Please either upload a file or provide a URL');
+                }
+            });
+        </script>

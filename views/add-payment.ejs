@@ -1,0 +1,109 @@
+<%- contentFor('extra_css') %>
+
+    <%- contentFor('content') %>
+
+        <div class="container-xxl">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Add Payment</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/payment/add" method="POST">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="userId" class="form-label">User</label>
+                                            <select class="form-select" id="userId" name="userId" required>
+                                                <option value="">Select User</option>
+                                                <% if (users && users.length> 0) { %>
+                                                    <% for (let i=0; i < users.length; i++) { %>
+                                                        <option value="<%= users[i]._id %>">
+                                                            <%= users[i].name %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="courseId" class="form-label">Course</label>
+                                            <select class="form-select" id="courseId" name="courseId" required>
+                                                <option value="">Select Course</option>
+                                                <% if (courses && courses.length> 0) { %>
+                                                    <% for (let i=0; i < courses.length; i++) { %>
+                                                        <option value="<%= courses[i]._id %>">
+                                                            <%= courses[i].title %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="amount" class="form-label">Amount</label>
+                                            <input type="number" class="form-control" id="amount" name="amount"
+                                                step="0.01" min="0" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="status" class="form-label">Status</label>
+                                            <select class="form-select" id="status" name="status" required>
+                                                <option value="">Select Status</option>
+                                                <option value="pending">Pending</option>
+                                                <option value="completed">Completed</option>
+                                                <option value="failed">Failed</option>
+                                                <option value="refunded">Refunded</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="paymentMethod" class="form-label">Payment Method</label>
+                                            <select class="form-select" id="paymentMethod" name="paymentMethod"
+                                                required>
+                                                <option value="">Select Method</option>
+                                                <option value="credit_card">Credit Card</option>
+                                                <option value="debit_card">Debit Card</option>
+                                                <option value="paypal">PayPal</option>
+                                                <option value="bank_transfer">Bank Transfer</option>
+                                                <option value="cash">Cash</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="transactionId" class="form-label">Transaction ID</label>
+                                            <input type="text" class="form-control" id="transactionId"
+                                                name="transactionId">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="notes" class="form-label">Notes</label>
+                                    <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">Create Payment</button>
+                                    <a href="/payments" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- contentFor('extra_javascript') %>

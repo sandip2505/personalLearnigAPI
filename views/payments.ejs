@@ -1,0 +1,97 @@
+<%- contentFor('extra_css') %>
+
+    <link href="/libs/simple-datatables/style.css" rel="stylesheet" type="text/css" />
+
+    <%- contentFor('content') %>
+
+        <div class="container-xxl">
+
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h4 class="card-title">Payments</h4>
+                                </div>
+                            </div>
+                            <a href="/payment/add" class="btn btn-primary">Add Payment</a>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="table-responsive">
+                                <table class="table datatable" id="datatable_1">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 16px;">
+                                                <div class="form-check mb-0 ms-n1">
+                                                    <input type="checkbox" class="form-check-input" name="select-all"
+                                                        id="select-all">
+                                                </div>
+                                            </th>
+                                            <th>User</th>
+                                            <th>Course</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Payment Method</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (!payments || payments.length===0) { %>
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted">No data found</td>
+                                            </tr>
+                                            <% } else { %>
+                                                <% for (let i=0; i < payments.length; i++) { %>
+                                                    <tr>
+                                                        <td>
+                                                            <%= i + 1 %>
+                                                        </td>
+                                                        <td>
+                                                            <%= payments[i].userId ? payments[i].userId.name : 'N/A' %>
+                                                        </td>
+                                                        <td>
+                                                            <%= payments[i].courseId ? payments[i].courseId.title
+                                                                : 'N/A' %>
+                                                        </td>
+                                                        <td>
+                                                            $<%= payments[i].amount || 0 %>
+                                                        </td>
+                                                        <td>
+                                                            <span
+                                                                class="badge <%= payments[i].status === 'completed' ? 'bg-success' : payments[i].status === 'pending' ? 'bg-warning' : 'bg-danger' %>">
+                                                                <%= payments[i].status || 'N/A' %>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <%= payments[i].paymentMethod || 'N/A' %>
+                                                        </td>
+                                                        <td>
+                                                            <%= new Date(payments[i].createdAt).toLocaleDateString() %>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/edit-payment/<%= payments[i]._id %>"
+                                                                class="btn btn-sm btn-primary">Edit</a>
+                                                            <a href="/delete-payment/<%= payments[i]._id %>"
+                                                                class="btn btn-sm btn-danger"
+                                                                onclick="return confirm('Are you sure?')">Delete</a>
+                                                        </td>
+                                                    </tr>
+                                                    <% } %>
+                                                        <% } %>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div><!--end card-body-->
+                    </div><!--end card-->
+                </div> <!--end col-->
+            </div><!--end row-->
+
+        </div><!-- container -->
+
+        <%- contentFor('extra_javascript') %>
+
+            <script src="/libs/simple-datatables/umd/simple-datatables.js"></script>
+            <script src="/js/pages/datatable.init.js"></script>
