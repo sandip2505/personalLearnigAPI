@@ -7,8 +7,11 @@ const UserController = {};
 // Get all users
 UserController.getUsers = async (req, res) => {
     try {
-        const users = await user.find().select('-password').populate('role_id', 'name'); 
+        const users = await user.find().select('-password').populate('role_id', 'name');
         console.log(users, "Fetched users");
+        users.forEach(user => {
+            user.profileImage = `${process.env.MEDIA_URL}/${user.profileImage}`;
+        });
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching users', error });
@@ -39,6 +42,9 @@ UserController.editUser = async (req, res) => {
     try {
         const userId = req.params.id;
         const userData = await user.findById(userId).select('-password'); // Exclude password
+        if (userData.profileImage) {
+            userData.profileImage = `${process.env.MEDIA_URL}/${userData.profileImage}`;
+        }
         if (!userData) {
             return res.status(404).json({ message: 'User not found' });
         }

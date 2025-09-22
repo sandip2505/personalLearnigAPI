@@ -3,13 +3,13 @@
 
 <head>
     <%- include('./title-meta') %>
-    
-    <%- extra_css %>
 
-    <%- include ('./head-css') %>
+        <%- typeof extra_css !=='undefined' ? extra_css : '' %>
+
+            <%- include ('./head-css') %>
 </head>
 
-<body id="body" <%- body %> >
+<body id="body" <%- typeof body !=='undefined' ? body : '' %> >
     <!-- leftbar-tab-menu -->
     <%- include ('./topbar') %>
 
@@ -20,19 +20,19 @@
 
                 <div class="page-content">
 
-                    <%- content %>
+                    <%- typeof content !=='undefined' ? content : '' %>
 
-                    <!--Start Footer-->
-                    <%- include ('./footer') %>
+                        <!--Start Footer-->
+                        <%- include ('./footer') %>
 
                 </div>
 
             </div>
 
-        <%- include ('./vendorjs') %>
-        <%- extra_javascript %>
+            <%- include ('./vendorjs') %>
+                <%- typeof extra_javascript !=='undefined' ? extra_javascript : '' %>
 
-      <script src="/js/app.js"></script>
+                    <script src="/js/app.js"></script>
 
 </body>
 

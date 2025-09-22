@@ -1,0 +1,96 @@
+<%- contentFor('extra_css') %>
+
+    <%- contentFor('content') %>
+
+        <div class="container-xxl">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Edit Lesson</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/edit-lesson/<%= lesson._id %>" method="POST">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">Title</label>
+                                            <input type="text" class="form-control" id="title" name="title"
+                                                value="<%= lesson.title %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="courseId" class="form-label">Course</label>
+                                            <select class="form-select" id="courseId" name="courseId" required>
+                                                <option value="">Select Course</option>
+                                                <% if (courses && courses.length> 0) { %>
+                                                    <% for (let i=0; i < courses.length; i++) { %>
+                                                        <option value="<%= courses[i]._id %>" <%=lesson.courseId &&
+                                                            lesson.courseId._id.toString()===courses[i]._id.toString()
+                                                            ? 'selected' : '' %>><%= courses[i].title %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="duration" class="form-label">Duration (minutes)</label>
+                                            <input type="number" class="form-control" id="duration" name="duration"
+                                                value="<%= lesson.duration || '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="order" class="form-label">Order</label>
+                                            <input type="number" class="form-control" id="order" name="order"
+                                                value="<%= lesson.order || '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">Content</label>
+                                    <textarea class="form-control" id="content" name="content"
+                                        rows="5"><%= lesson.content || '' %></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="videoUrl" class="form-label">Video URL</label>
+                                    <input type="url" class="form-control" id="videoUrl" name="videoUrl"
+                                        value="<%= lesson.videoUrl || '' %>">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="resources" class="form-label">Resources (JSON)</label>
+                                    <textarea class="form-control" id="resources" name="resources" rows="3"
+                                        placeholder='[{"name": "Resource 1", "url": "http://example.com"}]'><%= lesson.resources ? JSON.stringify(lesson.resources, null, 2) : '' %></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="isPublished"
+                                            name="isPublished" value="true" <%=lesson.isPublished ? 'checked' : '' %>>
+                                        <label class="form-check-label" for="isPublished">
+                                            Published
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">Update Lesson</button>
+                                    <a href="/lessons" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- contentFor('extra_javascript') %>

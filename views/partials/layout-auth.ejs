@@ -2,21 +2,21 @@
 <html lang="en" dir="ltr">
 
 <head>
-    <%- include('./title-meta') %> 
-    <%- extra_css %> 
-    <%- include ('./head-css') %>
+    <%- include('./title-meta') %>
+        <%- typeof extra_css !=='undefined' ? extra_css : '' %>
+            <%- include ('./head-css') %>
 </head>
 
-<body id="body"  <%- body %> >
-  
-    <%- content %>
+<body id="body" <%- typeof body !=='undefined' ? body : '' %> >
 
-    <!-- vendor js -->
-    <%- include ('./vendorjs') %>
-    <!-- App js -->
-    <script src="/js/app.js"></script>
-    
-    <%- extra_javascript %>
+    <%- typeof content !=='undefined' ? content : '' %>
+
+        <!-- vendor js -->
+        <%- include ('./vendorjs') %>
+            <!-- App js -->
+            <script src="/js/app.js"></script>
+
+            <%- typeof extra_javascript !=='undefined' ? extra_javascript : '' %>
 
 </body>
 

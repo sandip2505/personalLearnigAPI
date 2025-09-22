@@ -1,0 +1,99 @@
+<%- contentFor('extra_css') %>
+
+    <%- contentFor('content') %>
+
+        <div class="container-xxl">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Edit Notification</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/edit-notification/<%= notification._id %>" method="POST">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">Title</label>
+                                            <input type="text" class="form-control" id="title" name="title"
+                                                value="<%= notification.title %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="userId" class="form-label">User</label>
+                                            <select class="form-select" id="userId" name="userId" required>
+                                                <option value="">Select User</option>
+                                                <% if (users && users.length> 0) { %>
+                                                    <% for (let i=0; i < users.length; i++) { %>
+                                                        <option value="<%= users[i]._id %>" <%=notification.userId &&
+                                                            notification.userId._id.toString()===users[i]._id.toString()
+                                                            ? 'selected' : '' %>><%= users[i].name %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="message" class="form-label">Message</label>
+                                    <textarea class="form-control" id="message" name="message" rows="4"
+                                        required><%= notification.message %></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="type" class="form-label">Type</label>
+                                            <select class="form-select" id="type" name="type" required>
+                                                <option value="">Select Type</option>
+                                                <option value="info" <%=notification.type==='info' ? 'selected' : '' %>
+                                                    >Info</option>
+                                                <option value="success" <%=notification.type==='success' ? 'selected'
+                                                    : '' %>>Success</option>
+                                                <option value="warning" <%=notification.type==='warning' ? 'selected'
+                                                    : '' %>>Warning</option>
+                                                <option value="error" <%=notification.type==='error' ? 'selected' : ''
+                                                    %>>Error</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="priority" class="form-label">Priority</label>
+                                            <select class="form-select" id="priority" name="priority">
+                                                <option value="low" <%=notification.priority==='low' ? 'selected' : ''
+                                                    %>>Low</option>
+                                                <option value="medium" <%=notification.priority==='medium' ? 'selected'
+                                                    : '' %>>Medium</option>
+                                                <option value="high" <%=notification.priority==='high' ? 'selected' : ''
+                                                    %>>High</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="isRead" name="isRead"
+                                            value="true" <%=notification.isRead ? 'checked' : '' %>>
+                                        <label class="form-check-label" for="isRead">
+                                            Mark as Read
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">Update Notification</button>
+                                    <a href="/notifications" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- contentFor('extra_javascript') %>

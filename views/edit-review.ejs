@@ -1,0 +1,87 @@
+<%- contentFor('extra_css') %>
+
+    <%- contentFor('content') %>
+
+        <div class="container-xxl">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Edit Review</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/edit-review/<%= review._id %>" method="POST">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="userId" class="form-label">User</label>
+                                            <select class="form-select" id="userId" name="userId" required>
+                                                <option value="">Select User</option>
+                                                <% if (users && users.length> 0) { %>
+                                                    <% for (let i=0; i < users.length; i++) { %>
+                                                        <option value="<%= users[i]._id %>" <%=review.userId &&
+                                                            review.userId._id.toString()===users[i]._id.toString()
+                                                            ? 'selected' : '' %>><%= users[i].name %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="courseId" class="form-label">Course</label>
+                                            <select class="form-select" id="courseId" name="courseId" required>
+                                                <option value="">Select Course</option>
+                                                <% if (courses && courses.length> 0) { %>
+                                                    <% for (let i=0; i < courses.length; i++) { %>
+                                                        <option value="<%= courses[i]._id %>" <%=review.courseId &&
+                                                            review.courseId._id.toString()===courses[i]._id.toString()
+                                                            ? 'selected' : '' %>><%= courses[i].title %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="rating" class="form-label">Rating</label>
+                                            <select class="form-select" id="rating" name="rating" required>
+                                                <option value="">Select Rating</option>
+                                                <option value="1" <%=review.rating===1 ? 'selected' : '' %>>1 Star
+                                                </option>
+                                                <option value="2" <%=review.rating===2 ? 'selected' : '' %>>2 Stars
+                                                </option>
+                                                <option value="3" <%=review.rating===3 ? 'selected' : '' %>>3 Stars
+                                                </option>
+                                                <option value="4" <%=review.rating===4 ? 'selected' : '' %>>4 Stars
+                                                </option>
+                                                <option value="5" <%=review.rating===5 ? 'selected' : '' %>>5 Stars
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="comment" class="form-label">Comment</label>
+                                    <textarea class="form-control" id="comment" name="comment" rows="4"
+                                        required><%= review.comment %></textarea>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">Update Review</button>
+                                    <a href="/reviews" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- contentFor('extra_javascript') %>

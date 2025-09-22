@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv');
+const { default: axios } = require("axios");
 dotenv.config({ path: "./config.env" });
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -19,10 +20,10 @@ function requireAuth(req, res, next) {
 
     if (!token && req.session && req.session.token) {
         token = req.session.token;
+        console.log(req.session.token, "req.session.token")
     }
-
     if (!token) {
-      console.log(token, "No token found in request");
+        console.log(token, "No token found in request");
         return res.redirect('/login');
     }
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
@@ -31,6 +32,7 @@ function requireAuth(req, res, next) {
             return res.redirect('/login');
         }
         req.user = decoded;
+        axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
         next();
     });
 }
@@ -97,7 +99,7 @@ function redirectIfAuthenticated(req, res, next) {
 }
 
 module.exports = {
-    requireAuth,        
-    requireAuthAPI,       
-    redirectIfAuthenticated  
+    requireAuth,
+    requireAuthAPI,
+    redirectIfAuthenticated
 };

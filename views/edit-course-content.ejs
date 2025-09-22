@@ -1,0 +1,139 @@
+<%- contentFor('content') %>
+
+    <div class="container-xxl">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Edit Course Content</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="/course-content/edit/<%= courseContent._id %>" method="POST"
+                            enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="courseId" class="form-label">Course</label>
+                                        <select class="form-select" id="courseId" name="courseId" required>
+                                            <option value="">Select Course</option>
+                                            <% if (courses && courses.length> 0) { %>
+                                                <% for (let i=0; i < courses.length; i++) { %>
+                                                    <option value="<%= courses[i]._id %>" <%=courseContent.courseId &&
+                                                        courseContent.courseId._id.toString()===courses[i]._id.toString()
+                                                        ? 'selected' : '' %>>
+                                                        <%= courses[i].title %>
+                                                    </option>
+                                                    <% } %>
+                                                        <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="type" class="form-label">Content Type</label>
+                                        <select class="form-select" id="type" name="type" required>
+                                            <option value="">Select Type</option>
+                                            <option value="video" <%=courseContent.type==='video' ? 'selected' : '' %>
+                                                >Video</option>
+                                            <option value="document" <%=courseContent.type==='document' ? 'selected'
+                                                : '' %>>Document</option>
+                                            <option value="text" <%=courseContent.type==='text' ? 'selected' : '' %>
+                                                >Text</option>
+                                            <option value="audio" <%=courseContent.type==='audio' ? 'selected' : '' %>
+                                                >Audio</option>
+                                            <option value="image" <%=courseContent.type==='image' ? 'selected' : '' %>
+                                                >Image</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="title" name="title"
+                                    value="<%= courseContent.title %>" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description"
+                                    rows="3"><%= courseContent.description || '' %></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="orderIndex" class="form-label">Order Index</label>
+                                        <input type="number" class="form-control" id="orderIndex" name="orderIndex"
+                                            value="<%= courseContent.orderIndex %>" min="0">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="duration" class="form-label">Duration (minutes)</label>
+                                        <input type="number" class="form-control" id="duration" name="duration"
+                                            value="<%= courseContent.duration || '' %>" min="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="contentFile" class="form-label">Upload New File</label>
+                                <input type="file" class="form-control" id="contentFile" name="contentFile">
+                                <div class="form-text">Upload a new file to replace the current content</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="contentUrl" class="form-label">Content URL</label>
+                                <input type="url" class="form-control" id="contentUrl" name="contentUrl"
+                                    value="<%= courseContent.contentUrl || '' %>"
+                                    placeholder="Enter URL (YouTube, Vimeo, etc.)">
+                                <div class="form-text">Current content URL: <a href="<%= courseContent.contentUrl %>"
+                                        target="_blank">
+                                        <%= courseContent.contentUrl %>
+                                    </a></div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">Update Content</button>
+                                <a href="/course-content" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- contentFor('extra_javascript') %>
+        <script>
+            // Show/hide file upload or URL input based on content type
+            document.getElementById('type').addEventListener('change', function () {
+                const type = this.value;
+                const fileInput = document.getElementById('contentFile');
+                const urlInput = document.getElementById('contentUrl');
+
+                if (type === 'video' || type === 'audio' || type === 'image' || type === 'document') {
+                    fileInput.style.display = 'block';
+                    urlInput.style.display = 'block';
+                    fileInput.required = false;
+                    urlInput.required = false;
+                } else if (type === 'text') {
+                    fileInput.style.display = 'none';
+                    urlInput.style.display = 'block';
+                    fileInput.required = false;
+                    urlInput.required = false;
+                }
+            });
+
+            // Initialize display based on current type
+            document.addEventListener('DOMContentLoaded', function () {
+                const type = document.getElementById('type').value;
+                const fileInput = document.getElementById('contentFile');
+                const urlInput = document.getElementById('contentUrl');
+
+                if (type === 'text') {
+                    fileInput.style.display = 'none';
+                }
+            });
+        </script>

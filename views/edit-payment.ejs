@@ -1,0 +1,121 @@
+<%- contentFor('extra_css') %>
+
+    <%- contentFor('content') %>
+
+        <div class="container-xxl">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Edit Payment</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/edit-payment/<%= payment._id %>" method="POST">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="userId" class="form-label">User</label>
+                                            <select class="form-select" id="userId" name="userId" required>
+                                                <option value="">Select User</option>
+                                                <% if (users && users.length> 0) { %>
+                                                    <% for (let i=0; i < users.length; i++) { %>
+                                                        <option value="<%= users[i]._id %>" <%=payment.userId &&
+                                                            payment.userId._id.toString()===users[i]._id.toString()
+                                                            ? 'selected' : '' %>><%= users[i].name %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="courseId" class="form-label">Course</label>
+                                            <select class="form-select" id="courseId" name="courseId" required>
+                                                <option value="">Select Course</option>
+                                                <% if (courses && courses.length> 0) { %>
+                                                    <% for (let i=0; i < courses.length; i++) { %>
+                                                        <option value="<%= courses[i]._id %>" <%=payment.courseId &&
+                                                            payment.courseId._id.toString()===courses[i]._id.toString()
+                                                            ? 'selected' : '' %>><%= courses[i].title %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="amount" class="form-label">Amount</label>
+                                            <input type="number" class="form-control" id="amount" name="amount"
+                                                step="0.01" min="0" value="<%= payment.amount || '' %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="status" class="form-label">Status</label>
+                                            <select class="form-select" id="status" name="status" required>
+                                                <option value="">Select Status</option>
+                                                <option value="pending" <%=payment.status==='pending' ? 'selected' : ''
+                                                    %>>Pending</option>
+                                                <option value="completed" <%=payment.status==='completed' ? 'selected'
+                                                    : '' %>>Completed</option>
+                                                <option value="failed" <%=payment.status==='failed' ? 'selected' : '' %>
+                                                    >Failed</option>
+                                                <option value="refunded" <%=payment.status==='refunded' ? 'selected'
+                                                    : '' %>>Refunded</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="paymentMethod" class="form-label">Payment Method</label>
+                                            <select class="form-select" id="paymentMethod" name="paymentMethod"
+                                                required>
+                                                <option value="">Select Method</option>
+                                                <option value="credit_card" <%=payment.paymentMethod==='credit_card'
+                                                    ? 'selected' : '' %>>Credit Card</option>
+                                                <option value="debit_card" <%=payment.paymentMethod==='debit_card'
+                                                    ? 'selected' : '' %>>Debit Card</option>
+                                                <option value="paypal" <%=payment.paymentMethod==='paypal' ? 'selected'
+                                                    : '' %>>PayPal</option>
+                                                <option value="bank_transfer" <%=payment.paymentMethod==='bank_transfer'
+                                                    ? 'selected' : '' %>>Bank Transfer</option>
+                                                <option value="cash" <%=payment.paymentMethod==='cash' ? 'selected' : ''
+                                                    %>>Cash</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="transactionId" class="form-label">Transaction ID</label>
+                                            <input type="text" class="form-control" id="transactionId"
+                                                name="transactionId" value="<%= payment.transactionId || '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="notes" class="form-label">Notes</label>
+                                    <textarea class="form-control" id="notes" name="notes"
+                                        rows="3"><%= payment.notes || '' %></textarea>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">Update Payment</button>
+                                    <a href="/payments" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- contentFor('extra_javascript') %>

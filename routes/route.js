@@ -2,8 +2,15 @@ const express = require('express');
 const route = express.Router();
 const UserController = require('../controller/UserController');
 const RolePermissionController = require('../controller/RolePermissionController');
+const CoursesController = require('../controller/CoursesController');
 const CategoryController = require('../controller/CategoryController');
-const {requireAuth, requireAuthAPI, redirectIfAuthenticated} = require('../middlewere/auth');
+const MediaController = require('../controller/MediaController');
+const LessonController = require('../controller/LessonController');
+const NotificationController = require('../controller/NotificationController');
+const EnrollmentController = require('../controller/EnrollmentController');
+const PaymentController = require('../controller/PaymentController');
+const ReviewController = require('../controller/ReviewController');
+const { requireAuth, requireAuthAPI, redirectIfAuthenticated } = require('../middlewere/auth');
 
 
 
@@ -20,21 +27,21 @@ route.get('/edit-user/:id', requireAuth, UserController.editUser);
 route.post('/edit-user/:id', requireAuth, UserController.updateUser);
 
 // define routes for user roles
-route.get('/roles', RolePermissionController.getRoles);
-route.get('/role/add', RolePermissionController.addRole);
-route.post('/role/add', RolePermissionController.createRole);
-route.get('/edit-role/:id', RolePermissionController.editRole);
-route.post('/edit-role/:id', RolePermissionController.updateRole);
+route.get('/roles', requireAuth, RolePermissionController.getRoles);
+route.get('/role/add', requireAuth, RolePermissionController.addRole);
+route.post('/role/add', requireAuth, RolePermissionController.createRole);
+route.get('/edit-role/:id', requireAuth, RolePermissionController.editRole);
+route.post('/edit-role/:id', requireAuth, RolePermissionController.updateRole);
 
 // define routes for user permissions
-route.get('/permissions', RolePermissionController.getPermissions);
-route.get('/permission/add', RolePermissionController.addPermission);
-route.post('/permission/add', RolePermissionController.createPermission);
-route.get('/edit-permission/:id', RolePermissionController.editPermission);
-route.post('/edit-permission/:id', RolePermissionController.updatePermission);
+route.get('/permissions', requireAuth, RolePermissionController.getPermissions);
+route.get('/permission/add', requireAuth, RolePermissionController.addPermission);
+route.post('/permission/add', requireAuth, RolePermissionController.createPermission);
+route.get('/edit-permission/:id', requireAuth, RolePermissionController.editPermission);
+route.post('/edit-permission/:id', requireAuth, RolePermissionController.updatePermission);
 
-route.get('/role-permission/:id', RolePermissionController.getRolePermissions);
-route.post('/role-permission/:id', RolePermissionController.createRolePermission);
+route.get('/role-permission/:id', requireAuth, RolePermissionController.getRolePermissions);
+route.post('/role-permission/:id', requireAuth, RolePermissionController.createRolePermission);
 
 
 // define route for Category
@@ -45,395 +52,457 @@ route.get('/edit-category/:id', requireAuth, CategoryController.editCategory);
 route.post('/edit-category/:id', requireAuth, CategoryController.updateCategory);
 route.get('/delete-category/:id', requireAuth, CategoryController.deleteCategory);
 
+route.get('/courses', requireAuth, CoursesController.getCourses);
+route.get('/course/add', requireAuth, CoursesController.addCourse);
+route.post('/course/add', requireAuth, CoursesController.createCourse);
+route.get('/edit-course/:id', requireAuth, CoursesController.editCourse);
+route.post('/edit-course/:id', requireAuth, CoursesController.updateCourse);
+route.get('/delete-course/:id', requireAuth, CoursesController.deleteCourse);
 
+// Course Content Management Routes
+route.get('/course-content', requireAuth, CoursesController.getCourseContent);
+route.get('/course-content/add', requireAuth, CoursesController.addCourseContent);
+route.post('/course-content/add', requireAuth, CoursesController.createCourseContent);
+route.get('/course-content/edit/:id', requireAuth, CoursesController.editCourseContent);
+route.post('/course-content/edit/:id', requireAuth, CoursesController.updateCourseContent);
+route.get('/course-content/delete/:id', requireAuth, CoursesController.deleteCourseContent);
 
+// Media Library Routes
+route.get('/media', requireAuth, MediaController.getMediaLibrary);
+route.get('/media/upload', requireAuth, MediaController.uploadMedia);
+route.post('/media/upload', requireAuth, MediaController.handleUpload);
+route.get('/media/edit/:id', requireAuth, MediaController.editMedia);
+route.post('/media/edit/:id', requireAuth, MediaController.updateMedia);
+route.delete('/media/delete/:id', requireAuth, MediaController.deleteMedia);
+route.get('/media/selection', requireAuth, MediaController.getMediaForSelection);
 
+// define routes for Lessons
+route.get('/lessons', requireAuth, LessonController.getLessons);
+route.get('/lesson/add', requireAuth, LessonController.addLesson);
+route.post('/lesson/add', requireAuth, LessonController.createLesson);
+route.get('/edit-lesson/:id', requireAuth, LessonController.editLesson);
+route.post('/edit-lesson/:id', requireAuth, LessonController.updateLesson);
+route.get('/delete-lesson/:id', requireAuth, LessonController.deleteLesson);
 
+// Video routes removed - videos are now integrated into courses
 
+// define routes for Notifications
+route.get('/notifications', requireAuth, NotificationController.getNotifications);
+route.get('/notification/add', requireAuth, NotificationController.addNotification);
+route.post('/notification/add', requireAuth, NotificationController.createNotification);
+route.get('/edit-notification/:id', requireAuth, NotificationController.editNotification);
+route.post('/edit-notification/:id', requireAuth, NotificationController.updateNotification);
+route.get('/delete-notification/:id', requireAuth, NotificationController.deleteNotification);
 
+// define routes for Enrollments
+route.get('/enrollments', requireAuth, EnrollmentController.getEnrollments);
+route.get('/enrollment/add', requireAuth, EnrollmentController.addEnrollment);
+route.post('/enrollment/add', requireAuth, EnrollmentController.createEnrollment);
+route.get('/edit-enrollment/:id', requireAuth, EnrollmentController.editEnrollment);
+route.post('/edit-enrollment/:id', requireAuth, EnrollmentController.updateEnrollment);
+route.get('/delete-enrollment/:id', requireAuth, EnrollmentController.deleteEnrollment);
 
+// define routes for Payments
+route.get('/payments', requireAuth, PaymentController.getPayments);
+route.get('/payment/add', requireAuth, PaymentController.addPayment);
+route.post('/payment/add', requireAuth, PaymentController.createPayment);
+route.get('/edit-payment/:id', requireAuth, PaymentController.editPayment);
+route.post('/edit-payment/:id', requireAuth, PaymentController.updatePayment);
+route.get('/delete-payment/:id', requireAuth, PaymentController.deletePayment);
 
+// define routes for Reviews
+route.get('/reviews', requireAuth, ReviewController.getReviews);
+route.get('/review/add', requireAuth, ReviewController.addReview);
+route.post('/review/add', requireAuth, ReviewController.createReview);
+route.get('/edit-review/:id', requireAuth, ReviewController.editReview);
+route.post('/edit-review/:id', requireAuth, ReviewController.updateReview);
+route.get('/delete-review/:id', requireAuth, ReviewController.deleteReview);
 
 
 
 
 
-route.get('/pages', (req, res, next) => {
-  res.render('pages', {title: 'Pages', layout: 'partials/layout-vertical'});
-})
 
-route.get('/error', (req, res, next) => {
-  res.render('error');
-})
 
-route.get('/advanced-animation', (req, res, next) => {
-  res.render('advanced-animation', {title: 'Advanced Animation', layout: 'partials/layout-vertical'});
-})
 
-route.get('/advanced-clipboard', (req, res, next) => {
-  res.render('advanced-clipboard', {title: 'Advanced Clipboard'});
-})
 
-route.get('/advanced-dragula', (req, res, next) => {
-  res.render('advanced-dragula', {title: 'Advanced Dragula'});
-})
 
-route.get('/advanced-files', (req, res, next) => {
-  res.render('advanced-files', {title: 'Advanced Files'});
-})
 
-route.get('/advanced-highlight', (req, res, next) => {
-  res.render('advanced-highlight', {title: 'Advanced Highlight'});
-})
 
-route.get('/advanced-rangeslider', (req, res, next) => {
-  res.render('advanced-rangeslider', {title: 'Advanced Rangeslider'});
-})
+// route.get('/pages', (req, res, next) => {
+//   res.render('pages', { title: 'Pages', layout: 'partials/layout-vertical' });
+// })
 
-route.get('/advanced-ratings', (req, res, next) => {
-  res.render('advanced-ratings', {title: 'Advanced Ratings'});
-})
+// route.get('/error', (req, res, next) => {
+//   res.render('error');
+// })
 
-route.get('/advanced-ribbons', (req, res, next) => {
-  res.render('advanced-ribbons', {title: 'Advanced Ribbons'});
-})
+// route.get('/advanced-animation', (req, res, next) => {
+//   res.render('advanced-animation', { title: 'Advanced Animation', layout: 'partials/layout-vertical' });
+// })
 
-route.get('/advanced-sweetalerts', (req, res, next) => {
-  res.render('advanced-sweetalerts', {title: 'Advanced Sweetalerts'});
-})
+// route.get('/advanced-clipboard', (req, res, next) => {
+//   res.render('advanced-clipboard', { title: 'Advanced Clipboard' });
+// })
 
-route.get('/advanced-toasts', (req, res, next) => {
-  res.render('advanced-toasts', {title: 'Advanced Toasts'});
-})
+// route.get('/advanced-dragula', (req, res, next) => {
+//   res.render('advanced-dragula', { title: 'Advanced Dragula' });
+// })
 
-route.get('/analytics-customers', (req, res, next) => {
-  res.render('analytics-customers', {title: 'Analytics Customers'});
-})
+// route.get('/advanced-files', (req, res, next) => {
+//   res.render('advanced-files', { title: 'Advanced Files' });
+// })
 
-route.get('/analytics-reports', (req, res, next) => {
-  res.render('analytics-reports', {title: 'Analytics Reports'});
-})
+// route.get('/advanced-highlight', (req, res, next) => {
+//   res.render('advanced-highlight', { title: 'Advanced Highlight' });
+// })
 
-route.get('/apps-calendar', (req, res, next) => {
-  res.render('apps-calendar', {title: 'Apps Calendar'});
-})
+// route.get('/advanced-rangeslider', (req, res, next) => {
+//   res.render('advanced-rangeslider', { title: 'Advanced Rangeslider' });
+// })
 
-route.get('/apps-chat', (req, res, next) => {
-  res.render('apps-chat', {title: 'Apps Chat'});
-})
+// route.get('/advanced-ratings', (req, res, next) => {
+//   res.render('advanced-ratings', { title: 'Advanced Ratings' });
+// })
 
-route.get('/apps-contact-list', (req, res, next) => {
-  res.render('apps-contact-list', {title: 'Apps Contact List'});
-})
+// route.get('/advanced-ribbons', (req, res, next) => {
+//   res.render('advanced-ribbons', { title: 'Advanced Ribbons' });
+// })
 
-route.get('/apps-invoice', (req, res, next) => {
-  res.render('apps-invoice', {title: 'Apps Invoice'});
-})
+// route.get('/advanced-sweetalerts', (req, res, next) => {
+//   res.render('advanced-sweetalerts', { title: 'Advanced Sweetalerts' });
+// })
 
-route.get('/auth-404', (req, res, next) => {
-  res.render('auth-404', {title: 'Auth 404', layout: 'partials/layout-auth'});
-})
+// route.get('/advanced-toasts', (req, res, next) => {
+//   res.render('advanced-toasts', { title: 'Advanced Toasts' });
+// })
 
-route.get('/auth-500', (req, res, next) => {
-  res.render('auth-500', {title: 'Auth 500', layout: 'partials/layout-auth'});
-})
+// route.get('/analytics-customers', (req, res, next) => {
+//   res.render('analytics-customers', { title: 'Analytics Customers' });
+// })
 
-route.get('/auth-lock-screen', (req, res, next) => {
-  res.render('auth-lock-screen', {title: 'Auth Lock Screen', layout: 'partials/layout-auth'});
-})
+// route.get('/analytics-reports', (req, res, next) => {
+//   res.render('analytics-reports', { title: 'Analytics Reports' });
+// })
 
-route.get('/auth-maintenance', (req, res, next) => {
-  res.render('auth-maintenance', {title: 'Auth Maintenance', layout: 'partials/layout-auth'});
-})
+// route.get('/apps-calendar', (req, res, next) => {
+//   res.render('apps-calendar', { title: 'Apps Calendar' });
+// })
 
-route.get('/auth-recover-pw', (req, res, next) => {
-  res.render('auth-recover-pw', {title: 'Auth Recover Pw', layout: 'partials/layout-auth'});
-})
+// route.get('/apps-chat', (req, res, next) => {
+//   res.render('apps-chat', { title: 'Apps Chat' });
+// })
 
-route.get('/auth-register', (req, res, next) => {
-  res.render('auth-register', {title: 'Auth Register', layout: 'partials/layout-auth'});
-})
+// route.get('/apps-contact-list', (req, res, next) => {
+//   res.render('apps-contact-list', { title: 'Apps Contact List' });
+// })
 
-route.get('/charts-apex', (req, res, next) => {
-  res.render('charts-apex', {title: 'Charts Apex'});
-})
+// route.get('/apps-invoice', (req, res, next) => {
+//   res.render('apps-invoice', { title: 'Apps Invoice' });
+// })
 
-route.get('/charts-chartjs', (req, res, next) => {
-  res.render('charts-chartjs', {title: 'Charts Chartjs'});
-})
+// route.get('/auth-404', (req, res, next) => {
+//   res.render('auth-404', { title: 'Auth 404', layout: 'partials/layout-auth' });
+// })
 
-route.get('/charts-echarts', (req, res, next) => {
-  res.render('charts-echarts', {title: 'Charts Echarts'});
-})
+// route.get('/auth-500', (req, res, next) => {
+//   res.render('auth-500', { title: 'Auth 500', layout: 'partials/layout-auth' });
+// })
 
-route.get('/charts-justgage', (req, res, next) => {
-  res.render('charts-justgage', {title: 'Charts Justgage'});
-})
+// route.get('/auth-lock-screen', (req, res, next) => {
+//   res.render('auth-lock-screen', { title: 'Auth Lock Screen', layout: 'partials/layout-auth' });
+// })
 
-route.get('/charts-toast-ui', (req, res, next) => {
-  res.render('charts-toast-ui', {title: 'Charts Toast Ui'});
-})
+// route.get('/auth-maintenance', (req, res, next) => {
+//   res.render('auth-maintenance', { title: 'Auth Maintenance', layout: 'partials/layout-auth' });
+// })
 
-route.get('/ecommerce-customer-details', (req, res, next) => {
-  res.render('ecommerce-customer-details', {title: 'Ecommerce Customer Details'});
-})
+// route.get('/auth-recover-pw', (req, res, next) => {
+//   res.render('auth-recover-pw', { title: 'Auth Recover Pw', layout: 'partials/layout-auth' });
+// })
 
-route.get('/ecommerce-customers', (req, res, next) => {
-  res.render('ecommerce-customers', {title: 'Ecommerce Customers'});
-})
+// route.get('/auth-register', (req, res, next) => {
+//   res.render('auth-register', { title: 'Auth Register', layout: 'partials/layout-auth' });
+// })
 
-route.get('/ecommerce-index', (req, res, next) => {
-  res.render('ecommerce-index', {title: 'Ecommerce Index'});
-})
+// route.get('/charts-apex', (req, res, next) => {
+//   res.render('charts-apex', { title: 'Charts Apex' });
+// })
 
-route.get('/ecommerce-order-details', (req, res, next) => {
-  res.render('ecommerce-order-details', {title: 'Ecommerce Order Details'});
-})
+// route.get('/charts-chartjs', (req, res, next) => {
+//   res.render('charts-chartjs', { title: 'Charts Chartjs' });
+// })
 
-route.get('/ecommerce-orders', (req, res, next) => {
-  res.render('ecommerce-orders', {title: 'Ecommerce Orders'});
-})
+// route.get('/charts-echarts', (req, res, next) => {
+//   res.render('charts-echarts', { title: 'Charts Echarts' });
+// })
 
-route.get('/ecommerce-products', (req, res, next) => {
-  res.render('ecommerce-products', {title: 'Ecommerce Products'});
-})
+// route.get('/charts-justgage', (req, res, next) => {
+//   res.render('charts-justgage', { title: 'Charts Justgage' });
+// })
 
-route.get('/ecommerce-refunds', (req, res, next) => {
-  res.render('ecommerce-refunds', {title: 'Ecommerce Refunds'});
-})
+// route.get('/charts-toast-ui', (req, res, next) => {
+//   res.render('charts-toast-ui', { title: 'Charts Toast Ui' });
+// })
 
-route.get('/email-templates-alert', (req, res, next) => {
-  res.render('email-templates-alert', {title: 'Email Templates Alert'});
-})
+// route.get('/ecommerce-customer-details', (req, res, next) => {
+//   res.render('ecommerce-customer-details', { title: 'Ecommerce Customer Details' });
+// })
 
-route.get('/email-templates-basic', (req, res, next) => {
-  res.render('email-templates-basic', {title: 'Email Templates Basic'});
-})
+// route.get('/ecommerce-customers', (req, res, next) => {
+//   res.render('ecommerce-customers', { title: 'Ecommerce Customers' });
+// })
 
-route.get('/email-templates-billing', (req, res, next) => {
-  res.render('email-templates-billing', {title: 'Email Templates Billing'});
-})
+// route.get('/ecommerce-index', (req, res, next) => {
+//   res.render('ecommerce-index', { title: 'Ecommerce Index' });
+// })
 
-route.get('/forms-advanced', (req, res, next) => {
-  res.render('forms-advanced', {title: 'Forms Advanced'});
-})
+// route.get('/ecommerce-order-details', (req, res, next) => {
+//   res.render('ecommerce-order-details', { title: 'Ecommerce Order Details' });
+// })
 
-route.get('/forms-editors', (req, res, next) => {
-  res.render('forms-editors', {title: 'Forms Editors'});
-})
+// route.get('/ecommerce-orders', (req, res, next) => {
+//   res.render('ecommerce-orders', { title: 'Ecommerce Orders' });
+// })
 
-route.get('/forms-elements', (req, res, next) => {
-  res.render('forms-elements', {title: 'Forms Elements'});
-})
+// route.get('/ecommerce-products', (req, res, next) => {
+//   res.render('ecommerce-products', { title: 'Ecommerce Products' });
+// })
 
-route.get('/forms-img-crop', (req, res, next) => {
-  res.render('forms-img-crop', {title: 'Forms Img Crop'});
-})
+// route.get('/ecommerce-refunds', (req, res, next) => {
+//   res.render('ecommerce-refunds', { title: 'Ecommerce Refunds' });
+// })
 
-route.get('/forms-uploads', (req, res, next) => {
-  res.render('forms-uploads', {title: 'Forms Uploads'});
-})
+// route.get('/email-templates-alert', (req, res, next) => {
+//   res.render('email-templates-alert', { title: 'Email Templates Alert' });
+// })
 
-route.get('/forms-validation', (req, res, next) => {
-  res.render('forms-validation', {title: 'Forms Validation'});
-})
+// route.get('/email-templates-basic', (req, res, next) => {
+//   res.render('email-templates-basic', { title: 'Email Templates Basic' });
+// })
 
-route.get('/forms-wizard', (req, res, next) => {
-  res.render('forms-wizard', {title: 'Forms Wizard'});
-})
+// route.get('/email-templates-billing', (req, res, next) => {
+//   res.render('email-templates-billing', { title: 'Email Templates Billing' });
+// })
 
-route.get('/icons-fontawesome', (req, res, next) => {
-  res.render('icons-fontawesome', {title: 'Icons Fontawesome'});
-})
+// route.get('/forms-advanced', (req, res, next) => {
+//   res.render('forms-advanced', { title: 'Forms Advanced' });
+// })
 
-route.get('/icons-icofont', (req, res, next) => {
-  res.render('icons-icofont', {title: 'Icons Icofont'});
-})
+// route.get('/forms-editors', (req, res, next) => {
+//   res.render('forms-editors', { title: 'Forms Editors' });
+// })
 
-route.get('/icons-iconoir', (req, res, next) => {
-  res.render('icons-iconoir', {title: 'Icons Iconoir'});
-})
+// route.get('/forms-elements', (req, res, next) => {
+//   res.render('forms-elements', { title: 'Forms Elements' });
+// })
 
-route.get('/icons-lineawesome', (req, res, next) => {
-  res.render('icons-lineawesome', {title: 'Icons Lineawesome'});
-})
+// route.get('/forms-img-crop', (req, res, next) => {
+//   res.render('forms-img-crop', { title: 'Forms Img Crop' });
+// })
 
+// route.get('/forms-uploads', (req, res, next) => {
+//   res.render('forms-uploads', { title: 'Forms Uploads' });
+// })
 
+// route.get('/forms-validation', (req, res, next) => {
+//   res.render('forms-validation', { title: 'Forms Validation' });
+// })
 
-route.get('/index', (req, res, next) => {
-  res.render('index', {title: 'Index'});
-})
+// route.get('/forms-wizard', (req, res, next) => {
+//   res.render('forms-wizard', { title: 'Forms Wizard' });
+// })
 
-route.get('/maps-google', (req, res, next) => {
-  res.render('maps-google', {title: 'Maps Google'});
-})
+// route.get('/icons-fontawesome', (req, res, next) => {
+//   res.render('icons-fontawesome', { title: 'Icons Fontawesome' });
+// })
 
-route.get('/maps-leaflet', (req, res, next) => {
-  res.render('maps-leaflet', {title: 'Maps Leaflet'});
-})
+// route.get('/icons-icofont', (req, res, next) => {
+//   res.render('icons-icofont', { title: 'Icons Icofont' });
+// })
 
-route.get('/maps-vector', (req, res, next) => {
-  res.render('maps-vector', {title: 'Maps Vector'});
-})
+// route.get('/icons-iconoir', (req, res, next) => {
+//   res.render('icons-iconoir', { title: 'Icons Iconoir' });
+// })
 
-route.get('/pages-blogs', (req, res, next) => {
-  res.render('pages-blogs', {title: 'Pages Blogs'});
-})
+// route.get('/icons-lineawesome', (req, res, next) => {
+//   res.render('icons-lineawesome', { title: 'Icons Lineawesome' });
+// })
 
-route.get('/pages-faq', (req, res, next) => {
-  res.render('pages-faq', {title: 'Pages Faq'});
-})
 
-route.get('/pages-gallery', (req, res, next) => {
-  res.render('pages-gallery', {title: 'Pages Gallery'});
-})
 
-route.get('/pages-notifications', (req, res, next) => {
-  res.render('pages-notifications', {title: 'Pages Notifications'});
-})
+// route.get('/index', (req, res, next) => {
+//   res.render('index', { title: 'Index' });
+// })
 
-route.get('/pages-pricing', (req, res, next) => {
-  res.render('pages-pricing', {title: 'Pages Pricing'});
-})
+// route.get('/maps-google', (req, res, next) => {
+//   res.render('maps-google', { title: 'Maps Google' });
+// })
 
-route.get('/pages-profile', (req, res, next) => {
-  res.render('pages-profile', {title: 'Pages Profile'});
-})
+// route.get('/maps-leaflet', (req, res, next) => {
+//   res.render('maps-leaflet', { title: 'Maps Leaflet' });
+// })
 
-route.get('/pages-starter', (req, res, next) => {
-  res.render('pages-starter', {title: 'Pages Starter'});
-})
+// route.get('/maps-vector', (req, res, next) => {
+//   res.render('maps-vector', { title: 'Maps Vector' });
+// })
 
-route.get('/pages-timeline', (req, res, next) => {
-  res.render('pages-timeline', {title: 'Pages Timeline'});
-})
+// route.get('/pages-blogs', (req, res, next) => {
+//   res.render('pages-blogs', { title: 'Pages Blogs' });
+// })
 
-route.get('/pages-treeview', (req, res, next) => {
-  res.render('pages-treeview', {title: 'Pages Treeview'});
-})
+// route.get('/pages-faq', (req, res, next) => {
+//   res.render('pages-faq', { title: 'Pages Faq' });
+// })
 
-route.get('/projects-clients', (req, res, next) => {
-  res.render('projects-clients', {title: 'Projects Clients'});
-})
+// route.get('/pages-gallery', (req, res, next) => {
+//   res.render('pages-gallery', { title: 'Pages Gallery' });
+// })
 
-route.get('/projects-create', (req, res, next) => {
-  res.render('projects-create', {title: 'Projects Create'});
-})
+// route.get('/pages-notifications', (req, res, next) => {
+//   res.render('pages-notifications', { title: 'Pages Notifications' });
+// })
 
-route.get('/projects-kanban-board', (req, res, next) => {
-  res.render('projects-kanban-board', {title: 'Projects Kanban Board'});
-})
+// route.get('/pages-pricing', (req, res, next) => {
+//   res.render('pages-pricing', { title: 'Pages Pricing' });
+// })
 
-route.get('/projects-project', (req, res, next) => {
-  res.render('projects-project', {title: 'Projects Project'});
-})
+// route.get('/pages-profile', (req, res, next) => {
+//   res.render('pages-profile', { title: 'Pages Profile' });
+// })
 
-route.get('/projects-task', (req, res, next) => {
-  res.render('projects-task', {title: 'Projects Task'});
-})
+// route.get('/pages-starter', (req, res, next) => {
+//   res.render('pages-starter', { title: 'Pages Starter' });
+// })
 
-route.get('/projects-team', (req, res, next) => {
-  res.render('projects-team', {title: 'Projects Team'});
-})
+// route.get('/pages-timeline', (req, res, next) => {
+//   res.render('pages-timeline', { title: 'Pages Timeline' });
+// })
 
-route.get('/projects-users', (req, res, next) => {
-  res.render('projects-users', {title: 'Projects Users'});
-})
+// route.get('/pages-treeview', (req, res, next) => {
+//   res.render('pages-treeview', { title: 'Pages Treeview' });
+// })
 
-route.get('/tables-basic', (req, res, next) => {
-  res.render('tables-basic', {title: 'Tables Basic'});
-})
+// route.get('/projects-clients', (req, res, next) => {
+//   res.render('projects-clients', { title: 'Projects Clients' });
+// })
 
-route.get('/tables-datatable', (req, res, next) => {
-  res.render('tables-datatable', {title: 'Tables Datatable'});
-})
+// route.get('/projects-create', (req, res, next) => {
+//   res.render('projects-create', { title: 'Projects Create' });
+// })
 
-route.get('/tables-editable', (req, res, next) => {
-  res.render('tables-editable', {title: 'Tables Editable'});
-})
+// route.get('/projects-kanban-board', (req, res, next) => {
+//   res.render('projects-kanban-board', { title: 'Projects Kanban Board' });
+// })
 
-route.get('/ui-alerts', (req, res, next) => {
-  res.render('ui-alerts', {title: 'Ui Alerts'});
-})
+// route.get('/projects-project', (req, res, next) => {
+//   res.render('projects-project', { title: 'Projects Project' });
+// })
 
-route.get('/ui-avatar', (req, res, next) => {
-  res.render('ui-avatar', {title: 'Ui Avatar'});
-})
+// route.get('/projects-task', (req, res, next) => {
+//   res.render('projects-task', { title: 'Projects Task' });
+// })
 
-route.get('/ui-badges', (req, res, next) => {
-  res.render('ui-badges', {title: 'Ui Badges'});
-})
+// route.get('/projects-team', (req, res, next) => {
+//   res.render('projects-team', { title: 'Projects Team' });
+// })
 
-route.get('/ui-buttons', (req, res, next) => {
-  res.render('ui-buttons', {title: 'Ui Buttons'});
-})
+// route.get('/projects-users', (req, res, next) => {
+//   res.render('projects-users', { title: 'Projects Users' });
+// })
 
-route.get('/ui-cards', (req, res, next) => {
-  res.render('ui-cards', {title: 'Ui Cards'});
-})
+// route.get('/tables-basic', (req, res, next) => {
+//   res.render('tables-basic', { title: 'Tables Basic' });
+// })
 
-route.get('/ui-carousels', (req, res, next) => {
-  res.render('ui-carousels', {title: 'Ui Carousels'});
-})
+// route.get('/tables-datatable', (req, res, next) => {
+//   res.render('tables-datatable', { title: 'Tables Datatable' });
+// })
 
-route.get('/ui-dropdowns', (req, res, next) => {
-  res.render('ui-dropdowns', {title: 'Ui Dropdowns'});
-})
+// route.get('/tables-editable', (req, res, next) => {
+//   res.render('tables-editable', { title: 'Tables Editable' });
+// })
 
-route.get('/ui-grids', (req, res, next) => {
-  res.render('ui-grids', {title: 'Ui Grids'});
-})
+// route.get('/ui-alerts', (req, res, next) => {
+//   res.render('ui-alerts', { title: 'Ui Alerts' });
+// })
 
-route.get('/ui-images', (req, res, next) => {
-  res.render('ui-images', {title: 'Ui Images'});
-})
+// route.get('/ui-avatar', (req, res, next) => {
+//   res.render('ui-avatar', { title: 'Ui Avatar' });
+// })
 
-route.get('/ui-list', (req, res, next) => {
-  res.render('ui-list', {title: 'Ui List'});
-})
+// route.get('/ui-badges', (req, res, next) => {
+//   res.render('ui-badges', { title: 'Ui Badges' });
+// })
 
-route.get('/ui-modals', (req, res, next) => {
-  res.render('ui-modals', {title: 'Ui Modals'});
-})
+// route.get('/ui-buttons', (req, res, next) => {
+//   res.render('ui-buttons', { title: 'Ui Buttons' });
+// })
 
-route.get('/ui-navbar', (req, res, next) => {
-  res.render('ui-navbar', {title: 'Ui Navbar'});
-})
+// route.get('/ui-cards', (req, res, next) => {
+//   res.render('ui-cards', { title: 'Ui Cards' });
+// })
 
-route.get('/ui-navs', (req, res, next) => {
-  res.render('ui-navs', {title: 'Ui Navs'});
-})
+// route.get('/ui-carousels', (req, res, next) => {
+//   res.render('ui-carousels', { title: 'Ui Carousels' });
+// })
 
-route.get('/ui-paginations', (req, res, next) => {
-  res.render('ui-paginations', {title: 'Ui Paginations'});
-})
+// route.get('/ui-dropdowns', (req, res, next) => {
+//   res.render('ui-dropdowns', { title: 'Ui Dropdowns' });
+// })
 
-route.get('/ui-popover-tooltips', (req, res, next) => {
-  res.render('ui-popover-tooltips', {title: 'Ui Popover Tooltips'});
-})
+// route.get('/ui-grids', (req, res, next) => {
+//   res.render('ui-grids', { title: 'Ui Grids' });
+// })
 
-route.get('/ui-progress', (req, res, next) => {
-  res.render('ui-progress', {title: 'Ui Progress'});
-})
+// route.get('/ui-images', (req, res, next) => {
+//   res.render('ui-images', { title: 'Ui Images' });
+// })
 
-route.get('/ui-spinners', (req, res, next) => {
-  res.render('ui-spinners', {title: 'Ui Spinners'});
-})
+// route.get('/ui-list', (req, res, next) => {
+//   res.render('ui-list', { title: 'Ui List' });
+// })
 
-route.get('/ui-tabs-accordions', (req, res, next) => {
-  res.render('ui-tabs-accordions', {title: 'Ui Tabs Accordions'});
-})
+// route.get('/ui-modals', (req, res, next) => {
+//   res.render('ui-modals', { title: 'Ui Modals' });
+// })
 
-route.get('/ui-typography', (req, res, next) => {
-  res.render('ui-typography', {title: 'Ui Typography'});
-})
+// route.get('/ui-navbar', (req, res, next) => {
+//   res.render('ui-navbar', { title: 'Ui Navbar' });
+// })
 
-route.get('/ui-videos', (req, res, next) => {
-  res.render('ui-videos', {title: 'Ui Videos'});
-})
+// route.get('/ui-navs', (req, res, next) => {
+//   res.render('ui-navs', { title: 'Ui Navs' });
+// })
 
-route.get('/teachers', (req, res, next) => {
-  res.render('ui-widgets', {title: 'Ui Widgets'});
-})
+// route.get('/ui-paginations', (req, res, next) => {
+//   res.render('ui-paginations', { title: 'Ui Paginations' });
+// })
 
-module.exports  = route;
+// route.get('/ui-popover-tooltips', (req, res, next) => {
+//   res.render('ui-popover-tooltips', { title: 'Ui Popover Tooltips' });
+// })
+
+// route.get('/ui-progress', (req, res, next) => {
+//   res.render('ui-progress', { title: 'Ui Progress' });
+// })
+
+// route.get('/ui-spinners', (req, res, next) => {
+//   res.render('ui-spinners', { title: 'Ui Spinners' });
+// })
+
+// route.get('/ui-tabs-accordions', (req, res, next) => {
+//   res.render('ui-tabs-accordions', { title: 'Ui Tabs Accordions' });
+// })
+
+// route.get('/ui-typography', (req, res, next) => {
+//   res.render('ui-typography', { title: 'Ui Typography' });
+// })
+
+// })
+
+// route.get('/teachers', (req, res, next) => {
+//   res.render('ui-widgets', { title: 'Ui Widgets' });
+// })
+
+module.exports = route;

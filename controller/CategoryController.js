@@ -1,15 +1,10 @@
 const axios = require('axios');
 
-const CategoryController ={};
+const CategoryController = {};
 
 CategoryController.addCategory = async (req, res) => {
-    const token = req.session.token || req.cookies.token;
     try {
-        const response = await axios.get(`${process.env.API_URL}/api/categories`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await axios.get(`${process.env.API_URL}/api/categories`);
         res.render('add-category', { title: 'Add Category', layout: 'partials/layout-vertical', categories: response.data });
     } catch (error) {
         console.error('Error fetching categories:', error);
@@ -18,13 +13,8 @@ CategoryController.addCategory = async (req, res) => {
 };
 
 CategoryController.createCategory = async (req, res) => {
-    const token = req.session.token || req.cookies.token;
     try {
-        await axios.post(`${process.env.API_URL}/api/createCategory`, req.body, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        await axios.post(`${process.env.API_URL}/api/createCategory`, req.body);
         res.redirect('/categories');
     } catch (error) {
         console.error('Error creating category:', error);
@@ -33,13 +23,8 @@ CategoryController.createCategory = async (req, res) => {
 };
 
 CategoryController.getCategories = async (req, res) => {
-    const token = req.session.token || req.cookies.token;
     try {
-        const response = await axios.get(`${process.env.API_URL}/api/categories`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await axios.get(`${process.env.API_URL}/api/categories`);
         console.log(response.data);
         res.render('categories', { title: 'Categories', layout: 'partials/layout-vertical', categories: response.data });
     } catch (error) {

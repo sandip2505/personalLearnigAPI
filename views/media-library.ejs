@@ -1,0 +1,472 @@
+<%- contentFor('content') %>
+
+    <div class="container-xxl">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0">Media Library</h4>
+                        <div>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#uploadModal">
+                                <i class="fas fa-upload"></i> Upload Media
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Filters -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <select class="form-select" id="fileTypeFilter">
+                                    <option value="all" <%=filters.fileType==='all' ? 'selected' : '' %>>All Types
+                                    </option>
+                                    <option value="image" <%=filters.fileType==='image' ? 'selected' : '' %>>Images
+                                    </option>
+                                    <option value="video" <%=filters.fileType==='video' ? 'selected' : '' %>>Videos
+                                    </option>
+                                    <option value="audio" <%=filters.fileType==='audio' ? 'selected' : '' %>>Audio
+                                    </option>
+                                    <option value="document" <%=filters.fileType==='document' ? 'selected' : '' %>
+                                        >Documents</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="categoryFilter">
+                                    <option value="all" <%=filters.category==='all' ? 'selected' : '' %>>All Categories
+                                    </option>
+                                    <option value="general" <%=filters.category==='general' ? 'selected' : '' %>>General
+                                    </option>
+                                    <option value="courses" <%=filters.category==='courses' ? 'selected' : '' %>>Courses
+                                    </option>
+                                    <option value="thumbnails" <%=filters.category==='thumbnails' ? 'selected' : '' %>
+                                        >Thumbnails</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search media..."
+                                    value="<%= filters.search %>">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-outline-primary w-100" onclick="applyFilters()">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Media Grid -->
+                        <div class="row" id="mediaGrid">
+                            <% if (media && media.length> 0) { %>
+                                <% for (let i=0; i < media.length; i++) { %>
+                                    <div class="col-md-3 col-lg-2 mb-3 media-item" data-type="<%= media[i].fileType %>"
+                                        data-id="<%= media[i]._id %>">
+                                        <div class="card h-100">
+                                            <div class="card-img-top media-preview"
+                                                style="height: 150px; overflow: hidden;">
+                                                <% if (media[i].fileType==='image' ) { %>
+                                                    <img src="<%= media[i].fileUrl %>" class="img-fluid w-100 h-100"
+                                                        style="object-fit: cover;"
+                                                        alt="<%= media[i].altText || media[i].originalName %>">
+                                                    <% } else if (media[i].fileType==='video' ) { %>
+                                                        <video class="w-100 h-100" style="object-fit: cover;" muted>
+                                                            <source src="<%= media[i].fileUrl %>"
+                                                                type="<%= media[i].mimeType %>">
+                                                        </video>
+                                                        <div class="position-absolute top-50 start-50 translate-middle">
+                                                            <i class="fas fa-play-circle fa-3x text-white"></i>
+                                                        </div>
+                                                        <% } else { %>
+                                                            <div
+                                                                class="d-flex align-items-center justify-content-center h-100 bg-light">
+                                                                <i class="fas fa-file fa-3x text-muted"></i>
+                                                            </div>
+                                                            <% } %>
+                                            </div>
+                                            <div class="card-body p-2">
+                                                <h6 class="card-title text-truncate"
+                                                    title="<%= media[i].originalName %>">
+                                                    <%= media[i].originalName %>
+                                                </h6>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-muted">
+                                                        <%= (media[i].fileSize / 1024 / 1024).toFixed(2) %> MB
+                                                    </small>
+                                                    <div class="btn-group" role="group">
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="selectMedia('<%= media[i]._id %>', '<%= media[i].fileUrl %>', '<%= media[i].fileType %>')">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                            onclick="editMedia('<%= media[i]._id %>')">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                                            onclick="deleteMedia('<%= media[i]._id %>')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                        <% } else { %>
+                                            <div class="col-12 text-center py-5">
+                                                <i class="fas fa-images fa-3x text-muted mb-3"></i>
+                                                <h5 class="text-muted">No media found</h5>
+                                                <p class="text-muted">Upload some media files to get started</p>
+                                            </div>
+                                            <% } %>
+                        </div>
+
+                        <!-- Pagination -->
+                        <% if (pagination && pagination.pages> 1) { %>
+                            <nav aria-label="Media pagination">
+                                <ul class="pagination justify-content-center">
+                                    <% if (pagination.current> 1) { %>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="?page=<%= pagination.current - 1 %>&fileType=<%= filters.fileType %>&category=<%= filters.category %>&search=<%= filters.search %>">Previous</a>
+                                        </li>
+                                        <% } %>
+
+                                            <% for (let i=Math.max(1, pagination.current - 2); i
+                                                <=Math.min(pagination.pages, pagination.current + 2); i++) { %>
+                                                <li class="page-item <%= i === pagination.current ? 'active' : '' %>">
+                                                    <a class="page-link"
+                                                        href="?page=<%= i %>&fileType=<%= filters.fileType %>&category=<%= filters.category %>&search=<%= filters.search %>">
+                                                        <%= i %>
+                                                    </a>
+                                                </li>
+                                                <% } %>
+
+                                                    <% if (pagination.current < pagination.pages) { %>
+                                                        <li class="page-item">
+                                                            <a class="page-link"
+                                                                href="?page=<%= pagination.current + 1 %>&fileType=<%= filters.fileType %>&category=<%= filters.category %>&search=<%= filters.search %>">Next</a>
+                                                        </li>
+                                                        <% } %>
+                                </ul>
+                            </nav>
+                            <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Upload Media</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="mediaFile" class="form-label">Select File</label>
+                            <input type="file" class="form-control" id="mediaFile" name="mediaFile" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="fileType" class="form-label">File Type</label>
+                                    <select class="form-select" id="fileType" name="fileType">
+                                        <option value="">Auto-detect</option>
+                                        <option value="image">Image</option>
+                                        <option value="video">Video</option>
+                                        <option value="audio">Audio</option>
+                                        <option value="document">Document</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select class="form-select" id="category" name="category">
+                                        <option value="general">General</option>
+                                        <option value="courses">Courses</option>
+                                        <option value="thumbnails">Thumbnails</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="altText" class="form-label">Alt Text</label>
+                            <input type="text" class="form-control" id="altText" name="altText"
+                                placeholder="Describe this media">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"
+                                placeholder="Optional description"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Tags</label>
+                            <input type="text" class="form-control" id="tags" name="tags"
+                                placeholder="Enter tags separated by commas">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Upload
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Selection Modal (for use in other forms) -->
+    <div class="modal fade" id="mediaSelectionModal" tabindex="-1" aria-labelledby="mediaSelectionModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mediaSelectionModalLabel">Select Media</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <select class="form-select" id="selectionFileTypeFilter">
+                                <option value="all">All Types</option>
+                                <option value="image">Images</option>
+                                <option value="video">Videos</option>
+                                <option value="audio">Audio</option>
+                                <option value="document">Documents</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="selectionSearchInput"
+                                placeholder="Search media...">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-primary w-100" onclick="loadMediaForSelection()">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row" id="selectionMediaGrid">
+                        <!-- Media items will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmSelectionBtn" disabled>
+                        <i class="fas fa-check"></i> Select Media
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- contentFor('extra_javascript') %>
+        <script>
+            let selectedMediaId = null;
+            let selectedMediaUrl = null;
+            let selectedMediaType = null;
+            let mediaSelectionCallback = null;
+
+            // Upload form handling
+            document.getElementById('uploadForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                try {
+                    const response = await fetch('/media/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        location.reload();
+                    } else {
+                        alert('Error uploading media: ' + result.message);
+                    }
+                } catch (error) {
+                    alert('Error uploading media: ' + error.message);
+                }
+            });
+
+            // Filter functions
+            function applyFilters() {
+                const fileType = document.getElementById('fileTypeFilter').value;
+                const category = document.getElementById('categoryFilter').value;
+                const search = document.getElementById('searchInput').value;
+
+                const params = new URLSearchParams({
+                    fileType,
+                    category,
+                    search
+                });
+
+                window.location.href = '/media?' + params.toString();
+            }
+
+            // Media selection functions
+            function selectMedia(id, url, type) {
+                selectedMediaId = id;
+                selectedMediaUrl = url;
+                selectedMediaType = type;
+
+                // Update UI to show selection
+                document.querySelectorAll('.media-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                document.querySelector(`[data-id="${id}"]`).classList.add('selected');
+
+                // Enable confirm button
+                document.getElementById('confirmSelectionBtn').disabled = false;
+            }
+
+            function confirmMediaSelection() {
+                if (mediaSelectionCallback && selectedMediaId) {
+                    mediaSelectionCallback(selectedMediaId, selectedMediaUrl, selectedMediaType);
+                }
+
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('mediaSelectionModal'));
+                modal.hide();
+            }
+
+            // Load media for selection
+            async function loadMediaForSelection() {
+                const fileType = document.getElementById('selectionFileTypeFilter').value;
+                const search = document.getElementById('selectionSearchInput').value;
+
+                try {
+                    const response = await fetch(`/media/selection?fileType=${fileType}&search=${search}`);
+                    const result = await response.json();
+
+                    if (result.success) {
+                        displayMediaForSelection(result.data);
+                    }
+                } catch (error) {
+                    console.error('Error loading media:', error);
+                }
+            }
+
+            function displayMediaForSelection(media) {
+                const grid = document.getElementById('selectionMediaGrid');
+                grid.innerHTML = '';
+
+                if (media.length === 0) {
+                    grid.innerHTML = '<div class="col-12 text-center py-5"><h5 class="text-muted">No media found</h5></div>';
+                    return;
+                }
+
+                media.forEach(item => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3 col-lg-2 mb-3 media-selection-item';
+                    col.setAttribute('data-id', item._id);
+                    col.setAttribute('data-url', item.fileUrl);
+                    col.setAttribute('data-type', item.fileType);
+
+                    let preview = '';
+                    if (item.fileType === 'image') {
+                        preview = `<img src="${item.fileUrl}" class="img-fluid w-100" style="height: 120px; object-fit: cover;" alt="${item.altText || item.originalName}">`;
+                    } else if (item.fileType === 'video') {
+                        preview = `<video class="w-100" style="height: 120px; object-fit: cover;" muted><source src="${item.fileUrl}" type="${item.mimeType}"></video><div class="position-absolute top-50 start-50 translate-middle"><i class="fas fa-play-circle fa-2x text-white"></i></div>`;
+                    } else {
+                        preview = `<div class="d-flex align-items-center justify-content-center h-100 bg-light" style="height: 120px;"><i class="fas fa-file fa-2x text-muted"></i></div>`;
+                    }
+
+                    col.innerHTML = `
+                <div class="card h-100" onclick="selectMediaForSelection('${item._id}', '${item.fileUrl}', '${item.fileType}')">
+                    <div class="card-img-top position-relative" style="height: 120px; overflow: hidden;">
+                        ${preview}
+                    </div>
+                    <div class="card-body p-2">
+                        <h6 class="card-title text-truncate" title="${item.originalName}">${item.originalName}</h6>
+                    </div>
+                </div>
+            `;
+
+                    grid.appendChild(col);
+                });
+            }
+
+            function selectMediaForSelection(id, url, type) {
+                selectedMediaId = id;
+                selectedMediaUrl = url;
+                selectedMediaType = type;
+
+                // Update UI
+                document.querySelectorAll('.media-selection-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                document.querySelector(`[data-id="${id}"]`).classList.add('selected');
+
+                document.getElementById('confirmSelectionBtn').disabled = false;
+            }
+
+            // Set up confirm button
+            document.getElementById('confirmSelectionBtn').addEventListener('click', confirmMediaSelection);
+
+            // Load media when selection modal opens
+            document.getElementById('mediaSelectionModal').addEventListener('show.bs.modal', function () {
+                loadMediaForSelection();
+            });
+
+            // Media management functions
+            function editMedia(id) {
+                window.location.href = `/media/edit/${id}`;
+            }
+
+            function deleteMedia(id) {
+                if (confirm('Are you sure you want to delete this media?')) {
+                    fetch(`/media/delete/${id}`, { method: 'DELETE' })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                location.reload();
+                            } else {
+                                alert('Error deleting media: ' + result.message);
+                            }
+                        })
+                        .catch(error => {
+                            alert('Error deleting media: ' + error.message);
+                        });
+                }
+            }
+
+            // Global function to open media selection
+            window.openMediaSelection = function (callback) {
+                mediaSelectionCallback = callback;
+                selectedMediaId = null;
+                selectedMediaUrl = null;
+                selectedMediaType = null;
+                document.getElementById('confirmSelectionBtn').disabled = true;
+
+                const modal = new bootstrap.Modal(document.getElementById('mediaSelectionModal'));
+                modal.show();
+            };
+        </script>
+
+        <style>
+            .media-item.selected {
+                border: 3px solid #007bff !important;
+            }
+
+            .media-selection-item.selected .card {
+                border: 3px solid #007bff !important;
+            }
+
+            .media-preview {
+                position: relative;
+            }
+
+            .media-preview video {
+                position: relative;
+            }
+
+            .media-preview .position-absolute {
+                pointer-events: none;
+            }
+        </style>

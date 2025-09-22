@@ -1,0 +1,156 @@
+<%- contentFor('extra_css') %>
+
+    <%- contentFor('content') %>
+
+        <div class="container-xxl">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Add Course</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/course/add" method="POST" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">Title</label>
+                                            <input type="text" class="form-control" id="title" name="title" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="categoryId" class="form-label">Category</label>
+                                            <select class="form-select" id="categoryId" name="categoryId" required>
+                                                <option value="">Select Category</option>
+                                                <% if (categories && categories.length> 0) { %>
+                                                    <% for (let i=0; i < categories.length; i++) { %>
+                                                        <option value="<%= categories[i]._id %>">
+                                                            <%= categories[i].name %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="4"
+                                        required></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="price" class="form-label">Price</label>
+                                            <input type="number" class="form-control" id="price" name="price"
+                                                step="0.01" min="0" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="duration" class="form-label">Duration (hours)</label>
+                                            <input type="number" class="form-control" id="duration" name="duration"
+                                                min="1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="level" class="form-label">Level</label>
+                                            <select class="form-select" id="level" name="level" required>
+                                                <option value="">Select Level</option>
+                                                <option value="beginner">Beginner</option>
+                                                <option value="intermediate">Intermediate</option>
+                                                <option value="advanced">Advanced</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="language" class="form-label">Language</label>
+                                            <input type="text" class="form-control" id="language" name="language"
+                                                value="English">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="thumbnailUrl" class="form-label">Course Thumbnail</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="thumbnailUrl" name="thumbnailUrl"
+                                            placeholder="Select or upload thumbnail">
+                                        <button type="button" class="btn btn-outline-primary"
+                                            onclick="openMediaSelection(selectThumbnail)">
+                                            <i class="fas fa-images"></i> Select Media
+                                        </button>
+                                    </div>
+                                    <div id="thumbnailPreview" class="mt-2" style="display: none;">
+                                        <img id="thumbnailPreviewImg" src="" alt="Thumbnail preview"
+                                            class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="instructorId" class="form-label">Instructor</label>
+                                    <select class="form-select" id="instructorId" name="instructorId" required>
+                                        <option value="">Select Instructor</option>
+                                        <% if (instructors && instructors.length> 0) { %>
+                                            <% for (let i=0; i < instructors.length; i++) { %>
+                                                <option value="<%= instructors[i]._id %>">
+                                                    <%= instructors[i].name %>
+                                                </option>
+                                                <% } %>
+                                                    <% } %>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status</label>
+                                    <select class="form-select" id="status" name="status" required>
+                                        <option value="draft">Draft</option>
+                                        <option value="published">Published</option>
+                                        <option value="archived">Archived</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">Create Course</button>
+                                    <a href="/courses" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- contentFor('extra_javascript') %>
+            <script>
+                // Media selection functions
+                function selectThumbnail(mediaId, mediaUrl, mediaType) {
+                    document.getElementById('thumbnailUrl').value = mediaUrl;
+
+                    if (mediaType === 'image') {
+                        document.getElementById('thumbnailPreviewImg').src = mediaUrl;
+                        document.getElementById('thumbnailPreview').style.display = 'block';
+                    } else {
+                        document.getElementById('thumbnailPreview').style.display = 'none';
+                    }
+                }
+
+                // Filter media selection to only show images for thumbnails
+                function openMediaSelectionForThumbnail() {
+                    // Set the file type filter to images only
+                    document.getElementById('selectionFileTypeFilter').value = 'image';
+                    openMediaSelection(selectThumbnail);
+                }
+
+                // Update the button click handler
+                document.querySelector('button[onclick="openMediaSelection(selectThumbnail)"]').setAttribute('onclick', 'openMediaSelectionForThumbnail()');
+            </script>
